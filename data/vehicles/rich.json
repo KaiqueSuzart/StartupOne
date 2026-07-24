@@ -1,0 +1,76 @@
+{
+  "vehicle": {
+    "vin": "9BGRD08X04G117974",
+    "plate": "ABC1234",
+    "make": "Chevrolet",
+    "model": "Onix LTZ 1.4",
+    "modelYear": 2018,
+    "color": "Branco Summit"
+  },
+  "records": [
+    {
+      "id": "rich-001",
+      "date": "2018-06-15",
+      "odometerKm": 0,
+      "workshop": "Concessionária Vector Chevrolet",
+      "serviceType": "initial_registration",
+      "description": "Registro inicial do veículo zero-quilômetro na concessionária."
+    },
+    {
+      "id": "rich-002",
+      "date": "2019-06-20",
+      "odometerKm": 14350,
+      "workshop": "Concessionária Vector Chevrolet",
+      "serviceType": "scheduled_maintenance",
+      "description": "Revisão de 1 ano: troca de óleo e filtros, verificação de freios."
+    },
+    {
+      "id": "rich-003",
+      "date": "2020-07-02",
+      "odometerKm": 27900,
+      "workshop": "Oficina Mecânica Central",
+      "serviceType": "oil_change",
+      "description": "Troca de óleo e filtro de óleo fora da rede autorizada."
+    },
+    {
+      "id": "rich-004",
+      "date": "2021-08-11",
+      "odometerKm": 42750,
+      "workshop": "Oficina Mecânica Central",
+      "serviceType": "brakes",
+      "description": "Substituição de pastilhas e discos dianteiros; fluido de freio novo."
+    },
+    {
+      "id": "rich-005",
+      "date": "2022-09-30",
+      "odometerKm": 58200,
+      "workshop": "Pneus & Cia",
+      "serviceType": "tires",
+      "description": "Troca dos quatro pneus; alinhamento e balanceamento."
+    },
+    {
+      "id": "rich-006",
+      "date": "2023-10-14",
+      "odometerKm": 71400,
+      "workshop": "Oficina Mecânica Central",
+      "serviceType": "suspension",
+      "description": "Substituição de amortecedores dianteiros e bieletas."
+    },
+    {
+      "id": "rich-007",
+      "date": "2024-11-08",
+      "odometerKm": 84100,
+      "workshop": "Auto Elétrica Farol Norte",
+      "serviceType": "electrical",
+      "description": "Substituição da bateria e revisão do alternador."
+    },
+    {
+      "id": "rich-008",
+      "date": "2026-01-17",
+      "odometerKm": 95350,
+      "workshop": "Oficina Mecânica Central",
+      "serviceType": "scheduled_maintenance",
+      "description": "Revisão completa: óleo, filtros, correia dentada e velas."
+    }
+  ]
+}

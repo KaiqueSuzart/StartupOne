@@ -1,0 +1,60 @@
+{
+  "vehicle": {
+    "vin": "93YLSR7UHFJ123456",
+    "plate": "XYZ9A87",
+    "make": "Renault",
+    "model": "Sandero Expression 1.6",
+    "modelYear": 2015,
+    "color": "Vermelho Vivo"
+  },
+  "records": [
+    {
+      "id": "rb-001",
+      "date": "2015-04-08",
+      "odometerKm": 0,
+      "workshop": "Concessionária Rota Renault",
+      "serviceType": "initial_registration",
+      "description": "Registro inicial do veículo zero-quilômetro na concessionária."
+    },
+    {
+      "id": "rb-002",
+      "date": "2017-05-19",
+      "odometerKm": 30150,
+      "workshop": "Concessionária Rota Renault",
+      "serviceType": "scheduled_maintenance",
+      "description": "Revisão de 30.000 km: óleo, filtros e correia do alternador."
+    },
+    {
+      "id": "rb-003",
+      "date": "2019-06-27",
+      "odometerKm": 61300,
+      "workshop": "Oficina do Bairro",
+      "serviceType": "scheduled_maintenance",
+      "description": "Revisão de 60.000 km: óleo, filtros, velas e fluido de arrefecimento."
+    },
+    {
+      "id": "rb-004",
+      "date": "2021-03-12",
+      "odometerKm": 88500,
+      "workshop": "Oficina do Bairro",
+      "serviceType": "brakes",
+      "description": "Troca de pastilhas traseiras e revisão do freio de estacionamento."
+    },
+    {
+      "id": "rb-005",
+      "date": "2022-08-04",
+      "odometerKm": 52000,
+      "workshop": "Auto Center Estrada Real",
+      "serviceType": "oil_change",
+      "description": "Troca de óleo e filtro antes de anúncio de venda."
+    },
+    {
+      "id": "rb-006",
+      "date": "2023-02-15",
+      "odometerKm": 58600,
+      "workshop": "Auto Center Estrada Real",
+      "serviceType": "tires",
+      "description": "Troca de dois pneus dianteiros e balanceamento."
+    }
+  ]
+}
