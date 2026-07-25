@@ -17,6 +17,13 @@ export const serviceRecordSchema = z.object({
   date: isoDateSchema,
   odometerKm: z.number().int().min(0),
   workshop: z.string().min(1),
+  attestor: z.enum([
+    "dealership",
+    "authorized_service",
+    "independent_workshop",
+    "inspection",
+    "owner",
+  ]),
   serviceType: z.enum([
     "initial_registration",
     "scheduled_maintenance",

@@ -13,6 +13,7 @@
       "date": "2015-04-08",
       "odometerKm": 0,
       "workshop": "Concessionária Rota Renault",
+      "attestor": "dealership",
       "serviceType": "initial_registration",
       "description": "Registro inicial do veículo zero-quilômetro na concessionária."
     },
@@ -21,6 +22,7 @@
       "date": "2017-05-19",
       "odometerKm": 30150,
       "workshop": "Concessionária Rota Renault",
+      "attestor": "dealership",
       "serviceType": "scheduled_maintenance",
       "description": "Revisão de 30.000 km: óleo, filtros e correia do alternador."
     },
@@ -29,6 +31,7 @@
       "date": "2019-06-27",
       "odometerKm": 61300,
       "workshop": "Oficina do Bairro",
+      "attestor": "independent_workshop",
       "serviceType": "scheduled_maintenance",
       "description": "Revisão de 60.000 km: óleo, filtros, velas e fluido de arrefecimento."
     },
@@ -37,6 +40,7 @@
       "date": "2021-03-12",
       "odometerKm": 88500,
       "workshop": "Oficina do Bairro",
+      "attestor": "independent_workshop",
       "serviceType": "brakes",
       "description": "Troca de pastilhas traseiras e revisão do freio de estacionamento."
     },
@@ -45,6 +49,7 @@
       "date": "2022-08-04",
       "odometerKm": 52000,
       "workshop": "Auto Center Estrada Real",
+      "attestor": "independent_workshop",
       "serviceType": "oil_change",
       "description": "Troca de óleo e filtro antes de anúncio de venda."
     },
@@ -53,6 +58,7 @@
       "date": "2023-02-15",
       "odometerKm": 58600,
       "workshop": "Auto Center Estrada Real",
+      "attestor": "independent_workshop",
       "serviceType": "tires",
       "description": "Troca de dois pneus dianteiros e balanceamento."
     }

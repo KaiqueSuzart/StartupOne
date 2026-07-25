@@ -15,6 +15,7 @@ function record(
     date,
     odometerKm,
     workshop: "Oficina Teste",
+    attestor: "independent_workshop",
     serviceType: "other",
     description: "registro de teste",
   };

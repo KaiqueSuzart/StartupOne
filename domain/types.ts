@@ -19,6 +19,18 @@ export interface Vehicle {
   color: string;
 }
 
+/**
+ * Quem atestou o registro. A confiança do relatório depende da fonte, não só
+ * do conteúdo: a hierarquia (concessionária/vistoria > oficina > dono) é
+ * exibida na UI e será a base do modelo multi-atestador da fase on-chain.
+ */
+export type AttestorType =
+  | "dealership"
+  | "authorized_service"
+  | "independent_workshop"
+  | "inspection"
+  | "owner";
+
 export type ServiceType =
   | "initial_registration"
   | "scheduled_maintenance"
@@ -35,6 +47,7 @@ export interface ServiceRecord {
   date: string;
   odometerKm: number;
   workshop: string;
+  attestor: AttestorType;
   serviceType: ServiceType;
   description: string;
 }

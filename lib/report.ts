@@ -1,5 +1,7 @@
 import { classifyIdentifier } from "@/domain/plate";
 import { detectOdometerAnomalies, type AnomalyFlag } from "@/domain/anomaly";
+import { buildLedgerChain, type LedgerEntry } from "@/domain/ledger";
+import { summarizeMileage, type MileageSummary } from "@/domain/mileage";
 import type { VehicleHistory } from "@/domain/types";
 import { vehicleRepository } from "@/lib/repository";
 
@@ -9,10 +11,18 @@ import { vehicleRepository } from "@/lib/repository";
  * mantendo o domínio puro e as páginas como renderizadores finos.
  */
 
+export interface VehicleReport {
+  history: VehicleHistory;
+  anomalies: AnomalyFlag[];
+  mileage: MileageSummary | null;
+  /** Cadeia de hashes simulada — evidência didática de imutabilidade. */
+  ledger: LedgerEntry[];
+}
+
 export type VehicleReportResult =
   | { status: "invalid_query"; query: string }
   | { status: "not_found"; query: string }
-  | { status: "found"; history: VehicleHistory; anomalies: AnomalyFlag[] };
+  | ({ status: "found" } & VehicleReport);
 
 export async function lookupVehicleReport(
   rawQuery: string,
@@ -36,5 +46,7 @@ export async function lookupVehicleReport(
     status: "found",
     history,
     anomalies: detectOdometerAnomalies(history.records),
+    mileage: summarizeMileage(history.records),
+    ledger: buildLedgerChain(history.records),
   };
 }

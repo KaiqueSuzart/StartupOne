@@ -13,6 +13,7 @@
       "date": "2018-06-15",
       "odometerKm": 0,
       "workshop": "Concessionária Vector Chevrolet",
+      "attestor": "dealership",
       "serviceType": "initial_registration",
       "description": "Registro inicial do veículo zero-quilômetro na concessionária."
     },
@@ -21,6 +22,7 @@
       "date": "2019-06-20",
       "odometerKm": 14350,
       "workshop": "Concessionária Vector Chevrolet",
+      "attestor": "dealership",
       "serviceType": "scheduled_maintenance",
       "description": "Revisão de 1 ano: troca de óleo e filtros, verificação de freios."
     },
@@ -29,6 +31,7 @@
       "date": "2020-07-02",
       "odometerKm": 27900,
       "workshop": "Oficina Mecânica Central",
+      "attestor": "independent_workshop",
       "serviceType": "oil_change",
       "description": "Troca de óleo e filtro de óleo fora da rede autorizada."
     },
@@ -37,6 +40,7 @@
       "date": "2021-08-11",
       "odometerKm": 42750,
       "workshop": "Oficina Mecânica Central",
+      "attestor": "independent_workshop",
       "serviceType": "brakes",
       "description": "Substituição de pastilhas e discos dianteiros; fluido de freio novo."
     },
@@ -45,6 +49,7 @@
       "date": "2022-09-30",
       "odometerKm": 58200,
       "workshop": "Pneus & Cia",
+      "attestor": "independent_workshop",
       "serviceType": "tires",
       "description": "Troca dos quatro pneus; alinhamento e balanceamento."
     },
@@ -53,6 +58,7 @@
       "date": "2023-10-14",
       "odometerKm": 71400,
       "workshop": "Oficina Mecânica Central",
+      "attestor": "independent_workshop",
       "serviceType": "suspension",
       "description": "Substituição de amortecedores dianteiros e bieletas."
     },
@@ -61,6 +67,7 @@
       "date": "2024-11-08",
       "odometerKm": 84100,
       "workshop": "Auto Elétrica Farol Norte",
+      "attestor": "independent_workshop",
       "serviceType": "electrical",
       "description": "Substituição da bateria e revisão do alternador."
     },
@@ -69,6 +76,7 @@
       "date": "2026-01-17",
       "odometerKm": 95350,
       "workshop": "Oficina Mecânica Central",
+      "attestor": "independent_workshop",
       "serviceType": "scheduled_maintenance",
       "description": "Revisão completa: óleo, filtros, correia dentada e velas."
     }

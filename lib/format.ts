@@ -1,4 +1,4 @@
-import type { ServiceType } from "@/domain/types";
+import type { AttestorType, ServiceType } from "@/domain/types";
 
 /** Helpers de apresentação em pt-BR. Sem regra de negócio aqui. */
 
@@ -23,6 +23,14 @@ export function formatKm(km: number): string {
 export function maskVin(vin: string): string {
   return `•••••••••••••${vin.slice(-4)}`;
 }
+
+export const ATTESTOR_LABELS: Record<AttestorType, string> = {
+  dealership: "Concessionária",
+  authorized_service: "Rede autorizada",
+  independent_workshop: "Oficina independente",
+  inspection: "Vistoria",
+  owner: "Proprietário",
+};
 
 export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
   initial_registration: "Registro inicial",
