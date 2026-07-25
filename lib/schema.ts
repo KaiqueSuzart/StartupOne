@@ -15,6 +15,7 @@ const isoDateSchema = z
 export const serviceRecordSchema = z.object({
   id: z.string().min(1),
   date: isoDateSchema,
+  recordedAt: isoDateSchema,
   odometerKm: z.number().int().min(0),
   workshop: z.string().min(1),
   attestor: z.enum([
@@ -46,9 +47,20 @@ export const vehicleSchema = z.object({
   color: z.string().min(1),
 });
 
+export const recallNoticeSchema = z.object({
+  id: z.string().min(1),
+  code: z.string().min(1),
+  announcedAt: isoDateSchema,
+  system: z.string().min(1),
+  description: z.string(),
+  status: z.enum(["pending", "resolved"]),
+  resolvedByRecordId: z.string().min(1).optional(),
+});
+
 export const vehicleHistorySchema = z.object({
   vehicle: vehicleSchema,
   records: z.array(serviceRecordSchema).min(1),
+  recalls: z.array(recallNoticeSchema),
 });
 
 // Garantia em tempo de compilação de que o schema produz exatamente o tipo

@@ -13,6 +13,7 @@ function record(
   return {
     id,
     date,
+    recordedAt: date,
     odometerKm,
     workshop: "Oficina Teste",
     attestor: "independent_workshop",

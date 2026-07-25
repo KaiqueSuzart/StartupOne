@@ -43,8 +43,14 @@ export type ServiceType =
 
 export interface ServiceRecord {
   id: string;
-  /** Data ISO "YYYY-MM-DD" (sem hora — registros são diários). */
+  /** Data ISO "YYYY-MM-DD" em que o serviço foi DECLARADO como realizado. */
   date: string;
+  /**
+   * Data ISO em que o registro entrou no histórico. Separar as duas datas é o
+   * que torna o backdating visível: num histórico append-only ninguém pode
+   * alterar o carimbo de entrada, só declarar uma data de serviço anterior.
+   */
+  recordedAt: string;
   odometerKm: number;
   workshop: string;
   attestor: AttestorType;
@@ -52,8 +58,29 @@ export interface ServiceRecord {
   description: string;
 }
 
+export type RecallStatus = "pending" | "resolved";
+
+/**
+ * Campanha de recall do fabricante. Diferente de um serviço: nasce fora da
+ * oficina (é dado público do fabricante) e vale mesmo sem nenhum registro de
+ * manutenção — um recall aberto é risco de segurança independente do km.
+ */
+export interface RecallNotice {
+  id: string;
+  /** Código da campanha divulgado pelo fabricante. */
+  code: string;
+  announcedAt: string;
+  /** Sistema afetado (ex.: "Airbag do motorista"). */
+  system: string;
+  description: string;
+  status: RecallStatus;
+  /** Registro de serviço que comprova o reparo, quando atendido. */
+  resolvedByRecordId?: string;
+}
+
 export interface VehicleHistory {
   vehicle: Vehicle;
   /** O repositório garante ordenação ascendente por data. */
   records: ServiceRecord[];
+  recalls: RecallNotice[];
 }

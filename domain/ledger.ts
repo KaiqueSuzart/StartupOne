@@ -25,6 +25,8 @@ function fnv1a(input: string): string {
 
 export interface LedgerEntry {
   recordId: string;
+  /** Posição na cadeia (0-based), na ordem em que os registros entraram. */
+  index: number;
   /** Hash do registro encadeado ao anterior (16 hex). */
   hash: string;
   previousHash: string;
@@ -37,6 +39,7 @@ function serialize(record: ServiceRecord): string {
   return [
     record.id,
     record.date,
+    record.recordedAt,
     String(record.odometerKm),
     record.workshop,
     record.attestor,
@@ -45,22 +48,28 @@ function serialize(record: ServiceRecord): string {
 }
 
 /**
- * Constrói a cadeia na ordem cronológica dos registros. Função pura: os
- * mesmos registros produzem sempre os mesmos hashes.
+ * Constrói a cadeia na ordem de ENTRADA dos registros (`recordedAt`), não na
+ * ordem dos serviços: um histórico append-only encadeia o que chega, quando
+ * chega. Por isso um registro retroativo aparece no meio da linha do tempo mas
+ * no fim da cadeia — e não há como reordená-lo sem quebrar os hashes.
+ * Empates são desfeitos pelo id para manter a função determinística.
  */
 export function buildLedgerChain(
   records: readonly ServiceRecord[],
 ): LedgerEntry[] {
-  const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...records].sort(
+    (a, b) =>
+      a.recordedAt.localeCompare(b.recordedAt) || a.id.localeCompare(b.id),
+  );
   const chain: LedgerEntry[] = [];
   let previousHash = GENESIS_HASH;
 
-  for (const record of sorted) {
+  sorted.forEach((record, index) => {
     const payload = `${previousHash}:${serialize(record)}`;
     const hash = `${fnv1a(payload)}${fnv1a(`${payload}#2`)}`;
-    chain.push({ recordId: record.id, hash, previousHash });
+    chain.push({ recordId: record.id, index, hash, previousHash });
     previousHash = hash;
-  }
+  });
 
   return chain;
 }

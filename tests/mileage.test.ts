@@ -6,6 +6,7 @@ function record(id: string, date: string, odometerKm: number): ServiceRecord {
   return {
     id,
     date,
+    recordedAt: date,
     odometerKm,
     workshop: "Oficina Teste",
     attestor: "independent_workshop",

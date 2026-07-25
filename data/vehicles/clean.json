@@ -11,6 +11,7 @@
     {
       "id": "clean-001",
       "date": "2023-03-10",
+      "recordedAt": "2023-03-10",
       "odometerKm": 0,
       "workshop": "Concessionária AutoPrime VW",
       "attestor": "dealership",
@@ -20,6 +21,7 @@
     {
       "id": "clean-002",
       "date": "2024-03-05",
+      "recordedAt": "2024-03-05",
       "odometerKm": 10240,
       "workshop": "Concessionária AutoPrime VW",
       "attestor": "dealership",
@@ -29,11 +31,13 @@
     {
       "id": "clean-003",
       "date": "2025-02-20",
+      "recordedAt": "2025-02-21",
       "odometerKm": 20180,
       "workshop": "Oficina Roda Viva",
       "attestor": "independent_workshop",
       "serviceType": "scheduled_maintenance",
       "description": "Revisão de 2 anos / 20.000 km: óleo, filtros, alinhamento e balanceamento."
     }
-  ]
+  ],
+  "recalls": []
 }

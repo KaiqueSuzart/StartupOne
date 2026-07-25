@@ -1,5 +1,6 @@
 import { classifyIdentifier } from "@/domain/plate";
 import { detectOdometerAnomalies, type AnomalyFlag } from "@/domain/anomaly";
+import { detectIntegrityIssues, type IntegrityIssue } from "@/domain/integrity";
 import { buildLedgerChain, type LedgerEntry } from "@/domain/ledger";
 import { summarizeMileage, type MileageSummary } from "@/domain/mileage";
 import type { VehicleHistory } from "@/domain/types";
@@ -14,6 +15,7 @@ import { vehicleRepository } from "@/lib/repository";
 export interface VehicleReport {
   history: VehicleHistory;
   anomalies: AnomalyFlag[];
+  integrity: IntegrityIssue[];
   mileage: MileageSummary | null;
   /** Cadeia de hashes simulada — evidência didática de imutabilidade. */
   ledger: LedgerEntry[];
@@ -46,6 +48,7 @@ export async function lookupVehicleReport(
     status: "found",
     history,
     anomalies: detectOdometerAnomalies(history.records),
+    integrity: detectIntegrityIssues(history.records),
     mileage: summarizeMileage(history.records),
     ledger: buildLedgerChain(history.records),
   };

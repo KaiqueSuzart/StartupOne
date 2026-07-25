@@ -11,6 +11,7 @@
     {
       "id": "rb-001",
       "date": "2015-04-08",
+      "recordedAt": "2015-04-08",
       "odometerKm": 0,
       "workshop": "Concessionária Rota Renault",
       "attestor": "dealership",
@@ -20,6 +21,7 @@
     {
       "id": "rb-002",
       "date": "2017-05-19",
+      "recordedAt": "2017-05-19",
       "odometerKm": 30150,
       "workshop": "Concessionária Rota Renault",
       "attestor": "dealership",
@@ -29,6 +31,7 @@
     {
       "id": "rb-003",
       "date": "2019-06-27",
+      "recordedAt": "2019-06-27",
       "odometerKm": 61300,
       "workshop": "Oficina do Bairro",
       "attestor": "independent_workshop",
@@ -38,6 +41,7 @@
     {
       "id": "rb-004",
       "date": "2021-03-12",
+      "recordedAt": "2021-03-12",
       "odometerKm": 88500,
       "workshop": "Oficina do Bairro",
       "attestor": "independent_workshop",
@@ -47,6 +51,7 @@
     {
       "id": "rb-005",
       "date": "2022-08-04",
+      "recordedAt": "2023-06-10",
       "odometerKm": 52000,
       "workshop": "Auto Center Estrada Real",
       "attestor": "independent_workshop",
@@ -56,11 +61,23 @@
     {
       "id": "rb-006",
       "date": "2023-02-15",
+      "recordedAt": "2023-02-16",
       "odometerKm": 58600,
       "workshop": "Auto Center Estrada Real",
       "attestor": "independent_workshop",
       "serviceType": "tires",
       "description": "Troca de dois pneus dianteiros e balanceamento."
+    }
+  ],
+  "recalls": [
+    {
+      "id": "rb-recall-1",
+      "code": "RCL-2018-0177",
+      "announcedAt": "2018-02-19",
+      "system": "Fixação do banco traseiro",
+      "description": "Parafusos de fixação do banco traseiro podem apresentar folga. Reparo gratuito na rede autorizada.",
+      "status": "resolved",
+      "resolvedByRecordId": "rb-003"
     }
   ]
 }

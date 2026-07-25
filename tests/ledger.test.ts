@@ -6,6 +6,7 @@ function record(id: string, date: string, odometerKm: number): ServiceRecord {
   return {
     id,
     date,
+    recordedAt: date,
     odometerKm,
     workshop: "Oficina Teste",
     attestor: "independent_workshop",
@@ -49,6 +50,22 @@ describe("buildLedgerChain", () => {
     expect(tampered[0].hash).toBe(original[0].hash);
     expect(tampered[1].hash).not.toBe(original[1].hash);
     expect(tampered[2].hash).not.toBe(original[2].hash);
+  });
+
+  it("encadeia na ordem de entrada, não na de serviço", () => {
+    const backdated: ServiceRecord = {
+      ...record("retroativo", "2020-06-01", 8000),
+      recordedAt: "2022-06-01",
+    };
+    const chain = buildLedgerChain([records[0], backdated, records[1]]);
+
+    // Serviço de 2020, mas registrado depois de tudo: último elo da cadeia.
+    expect(chain.map((entry) => entry.recordId)).toEqual([
+      "a",
+      "b",
+      "retroativo",
+    ]);
+    expect(chain[2].index).toBe(2);
   });
 
   it("produz hashes distintos para registros distintos", () => {
