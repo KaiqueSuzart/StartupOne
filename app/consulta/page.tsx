@@ -29,6 +29,7 @@ export default async function ConsultaPage({
         <VehicleReport
           history={result.history}
           anomalies={result.anomalies}
+          integrity={result.integrity}
           mileage={result.mileage}
           ledger={result.ledger}
         />

@@ -11,6 +11,7 @@ import { VerifiedSeal } from "./VerifiedSeal";
 interface TimelineItemProps {
   record: ServiceRecord;
   anomalous: boolean;
+  backdated: boolean;
   ledgerEntry: LedgerEntry | undefined;
 }
 
@@ -24,6 +25,7 @@ const HIGH_TRUST: ReadonlySet<ServiceRecord["attestor"]> = new Set([
 export function TimelineItem({
   record,
   anomalous,
+  backdated,
   ledgerEntry,
 }: TimelineItemProps) {
   const trusted = HIGH_TRUST.has(record.attestor);
@@ -74,12 +76,20 @@ export function TimelineItem({
                 Km inconsistente
               </span>
             )}
+            {backdated && (
+              <span className="rounded-full bg-amber-500 px-3 py-1 text-xs font-medium text-white">
+                Registro retroativo
+              </span>
+            )}
             <VerifiedSeal />
           </span>
         </footer>
         {ledgerEntry !== undefined && (
           <p className="mt-3 border-t border-slate-100 pt-2 font-mono text-[11px] text-slate-400">
-            <span className="text-slate-500">hash</span> {ledgerEntry.hash}
+            <span className="text-slate-500">registrado em</span>{" "}
+            {formatDateBR(record.recordedAt)}
+            <span className="text-slate-500"> · elo</span> #{ledgerEntry.index + 1}
+            <span className="text-slate-500"> · hash</span> {ledgerEntry.hash}
             <span className="text-slate-500"> · anterior</span>{" "}
             {ledgerEntry.previousHash}
           </p>

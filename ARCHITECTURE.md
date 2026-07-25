@@ -58,9 +58,21 @@ testadas em `tests/`:
 - `plate.ts` — normalização e validação de placa (antiga e Mercosul) e VIN
   (17 caracteres, sem I/O/Q).
 - `mileage.ts` — km atual e média anual comparada à referência nacional.
+- `integrity.ts` — integridade da linha do tempo: registro retroativo
+  (`recordedAt` muito posterior a `date`), serviço declarado para depois do
+  próprio registro, e lacunas acima de 24 meses.
 - `ledger.ts` — encadeamento de hashes (cada registro depende do anterior).
   **Simulação didática com FNV-1a**, rotulada como tal na UI; a fase on-chain
   usará hash criptográfico e ancoragem real.
+
+## Duas datas por registro, e por que importam
+
+`date` é quando o serviço foi **declarado** como realizado; `recordedAt` é
+quando o registro **entrou** no histórico. Num histórico append-only ninguém
+altera o carimbo de entrada — só pode declarar uma data de serviço anterior.
+Por isso a cadeia de hashes segue a ordem de `recordedAt` (ordem de entrada),
+enquanto a linha do tempo exibe a ordem de `date`: um registro retroativo
+aparece no meio da timeline mas no fim da cadeia, e isso fica visível.
 
 ## Confiança da fonte
 
@@ -71,10 +83,11 @@ modelo multi-atestador (com assinatura por fonte) previsto para a fase 2.
 
 ## Decisões registradas para o futuro (fora do escopo da PoC)
 
-- Prioridades vindas da análise de mercado (ver [docs/ANALISE-MERCADO.md](docs/ANALISE-MERCADO.md)):
-  `recordedAt` separado de `date` (expõe backdating), evento de recall,
-  `workshopId`/CNPJ, tipos de evento como union (transferência de dono, vistoria)
-  e histórico vazio representável.
+- Prioridades ainda abertas da análise de mercado (ver
+  [docs/ANALISE-MERCADO.md](docs/ANALISE-MERCADO.md)): `workshopId`/CNPJ,
+  tipos de evento como union (transferência de dono, vistoria), histórico vazio
+  representável e semáforo de risco com dados de bureau (leilão, sinistro,
+  gravame).
 
 - **VIN é identificador sensível**: on-chain será publicado apenas como hash, nunca em
   texto puro. A UI já o exibe mascarado.

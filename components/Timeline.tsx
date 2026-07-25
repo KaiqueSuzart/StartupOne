@@ -6,11 +6,18 @@ interface TimelineProps {
   records: ServiceRecord[];
   /** Ids dos registros sinalizados pela detecção de anomalia. */
   flaggedIds: ReadonlySet<string>;
+  /** Ids dos registros que entraram no histórico muito depois do serviço. */
+  backdatedIds: ReadonlySet<string>;
   ledger: LedgerEntry[];
 }
 
 /** Linha do tempo cronológica: do registro inicial à revisão mais recente. */
-export function Timeline({ records, flaggedIds, ledger }: TimelineProps) {
+export function Timeline({
+  records,
+  flaggedIds,
+  backdatedIds,
+  ledger,
+}: TimelineProps) {
   const ledgerByRecord = new Map(ledger.map((entry) => [entry.recordId, entry]));
 
   return (
@@ -24,6 +31,7 @@ export function Timeline({ records, flaggedIds, ledger }: TimelineProps) {
             key={record.id}
             record={record}
             anomalous={flaggedIds.has(record.id)}
+            backdated={backdatedIds.has(record.id)}
             ledgerEntry={ledgerByRecord.get(record.id)}
           />
         ))}
@@ -32,7 +40,9 @@ export function Timeline({ records, flaggedIds, ledger }: TimelineProps) {
         <strong className="font-semibold">Simulação de encadeamento:</strong> os
         hashes acima são gerados localmente para demonstrar o conceito — cada
         registro depende do anterior, então alterar um evento quebraria todos os
-        seguintes. Na próxima fase esse encadeamento será ancorado em blockchain.
+        seguintes. A cadeia segue a ordem de entrada dos registros, que pode
+        diferir da ordem dos serviços. Na próxima fase esse encadeamento será
+        ancorado em blockchain.
       </p>
     </section>
   );

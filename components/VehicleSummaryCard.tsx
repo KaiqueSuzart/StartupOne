@@ -7,6 +7,7 @@ interface VehicleSummaryCardProps {
   vehicle: Vehicle;
   recordCount: number;
   anomalyCount: number;
+  pendingRecallCount: number;
   mileage: MileageSummary | null;
 }
 
@@ -20,6 +21,7 @@ export function VehicleSummaryCard({
   vehicle,
   recordCount,
   anomalyCount,
+  pendingRecallCount,
   mileage,
 }: VehicleSummaryCardProps) {
   return (
@@ -65,7 +67,14 @@ export function VehicleSummaryCard({
           <dd className="font-mono text-lg">{maskVin(vehicle.vin)}</dd>
         </div>
       </dl>
-      <div className="mt-5 border-t border-slate-100 pt-4">
+      <div className="mt-5 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+        {pendingRecallCount > 0 && (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-800 ring-1 ring-amber-200">
+            {pendingRecallCount === 1
+              ? "1 recall pendente"
+              : `${pendingRecallCount} recalls pendentes`}
+          </span>
+        )}
         {anomalyCount > 0 ? (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700 ring-1 ring-red-200">
             {anomalyCount === 1
