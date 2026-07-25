@@ -50,6 +50,15 @@ export function AnomalyAlert({ anomalies }: AnomalyAlertProps) {
         Este padrão é um indício comum de adulteração de odômetro. Avalie o
         veículo com cautela antes de qualquer negociação.
       </p>
+      {/* A tese do produto dita em uma frase, exatamente onde ela se prova. */}
+      <p className="mt-3 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-900">
+        <strong className="font-semibold">
+          O registro anterior não pôde ser apagado.
+        </strong>{" "}
+        Num histórico comum, bastaria remover a linha inconveniente. Aqui o
+        registro de {formatKm(anomalies[0].previousKm)} continua no histórico —
+        e é ele que expõe a inconsistência.
+      </p>
     </section>
   );
 }

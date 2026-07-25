@@ -27,6 +27,10 @@ Outros comandos: `npm run test` (Vitest), `npm run build`, `npm run lint`,
 | `XYZ9A87` | **Fraude de odômetro**: 88.500 km → 52.000 km |
 | `AAA0A00` | Placa válida sem histórico (estado vazio) |
 
+O relatório mostra km atual e média anual, gráfico de quilometragem, procedência
+de cada registro e o encadeamento de hashes (simulado — ver
+[/como-verificamos](http://localhost:3000/como-verificamos)).
+
 Também funciona por VIN (ex.: `9BWZZZ377VT004251`) e por deep-link:
 `http://localhost:3000/?placa=XYZ9A87`.
 
@@ -35,3 +39,5 @@ Também funciona por VIN (ex.: `9BWZZZ377VT004251`) e por deep-link:
 - [ARCHITECTURE.md](ARCHITECTURE.md) — camadas e a costura para a blockchain
 - [CONVENTIONS.md](CONVENTIONS.md) — padrões de código
 - [SECURITY.md](SECURITY.md) — práticas de segurança
+- [docs/ANALISE-MERCADO.md](docs/ANALISE-MERCADO.md) — mercado, concorrentes,
+  visões de oficina/cliente/montadora e roadmap

@@ -57,8 +57,24 @@ testadas em `tests/`:
   > 500 km/dia, constante `MAX_PLAUSIBLE_KM_PER_DAY`).
 - `plate.ts` — normalização e validação de placa (antiga e Mercosul) e VIN
   (17 caracteres, sem I/O/Q).
+- `mileage.ts` — km atual e média anual comparada à referência nacional.
+- `ledger.ts` — encadeamento de hashes (cada registro depende do anterior).
+  **Simulação didática com FNV-1a**, rotulada como tal na UI; a fase on-chain
+  usará hash criptográfico e ancoragem real.
+
+## Confiança da fonte
+
+Cada `ServiceRecord` carrega um `attestor` (concessionária, rede autorizada,
+oficina independente, vistoria, proprietário). A UI exibe a procedência porque a
+confiança do relatório depende de quem atestou, não só do conteúdo — é a base do
+modelo multi-atestador (com assinatura por fonte) previsto para a fase 2.
 
 ## Decisões registradas para o futuro (fora do escopo da PoC)
+
+- Prioridades vindas da análise de mercado (ver [docs/ANALISE-MERCADO.md](docs/ANALISE-MERCADO.md)):
+  `recordedAt` separado de `date` (expõe backdating), evento de recall,
+  `workshopId`/CNPJ, tipos de evento como union (transferência de dono, vistoria)
+  e histórico vazio representável.
 
 - **VIN é identificador sensível**: on-chain será publicado apenas como hash, nunca em
   texto puro. A UI já o exibe mascarado.

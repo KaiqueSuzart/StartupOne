@@ -1,13 +1,33 @@
+import type { LedgerEntry } from "@/domain/ledger";
 import type { ServiceRecord } from "@/domain/types";
-import { formatDateBR, formatKm, SERVICE_TYPE_LABELS } from "@/lib/format";
+import {
+  ATTESTOR_LABELS,
+  formatDateBR,
+  formatKm,
+  SERVICE_TYPE_LABELS,
+} from "@/lib/format";
 import { VerifiedSeal } from "./VerifiedSeal";
 
 interface TimelineItemProps {
   record: ServiceRecord;
   anomalous: boolean;
+  ledgerEntry: LedgerEntry | undefined;
 }
 
-export function TimelineItem({ record, anomalous }: TimelineItemProps) {
+/** Concessionária e vistoria têm peso de confiança maior que oficina/dono. */
+const HIGH_TRUST: ReadonlySet<ServiceRecord["attestor"]> = new Set([
+  "dealership",
+  "authorized_service",
+  "inspection",
+]);
+
+export function TimelineItem({
+  record,
+  anomalous,
+  ledgerEntry,
+}: TimelineItemProps) {
+  const trusted = HIGH_TRUST.has(record.attestor);
+
   return (
     <li className="relative">
       <span
@@ -38,6 +58,15 @@ export function TimelineItem({ record, anomalous }: TimelineItemProps) {
         </header>
         <p className="mt-2 text-sm text-slate-700">{record.description}</p>
         <footer className="mt-3 flex flex-wrap items-center gap-2">
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${
+              trusted
+                ? "bg-sky-50 text-sky-800 ring-sky-200"
+                : "bg-slate-50 text-slate-600 ring-slate-200"
+            }`}
+          >
+            {ATTESTOR_LABELS[record.attestor]}
+          </span>
           <span className="text-xs text-slate-500">{record.workshop}</span>
           <span className="ml-auto inline-flex items-center gap-2">
             {anomalous && (
@@ -48,6 +77,13 @@ export function TimelineItem({ record, anomalous }: TimelineItemProps) {
             <VerifiedSeal />
           </span>
         </footer>
+        {ledgerEntry !== undefined && (
+          <p className="mt-3 border-t border-slate-100 pt-2 font-mono text-[11px] text-slate-400">
+            <span className="text-slate-500">hash</span> {ledgerEntry.hash}
+            <span className="text-slate-500"> · anterior</span>{" "}
+            {ledgerEntry.previousHash}
+          </p>
+        )}
       </article>
     </li>
   );

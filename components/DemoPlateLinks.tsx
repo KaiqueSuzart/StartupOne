@@ -4,6 +4,7 @@ const DEMO_PLATES = [
   { plate: "BRA0S17", label: "Histórico limpo" },
   { plate: "ABC1234", label: "Histórico completo" },
   { plate: "XYZ9A87", label: "Km inconsistente" },
+  { plate: "AAA0A00", label: "Sem histórico" },
 ] as const;
 
 /** Atalhos de demonstração — a PoC roda apenas com dados simulados. */

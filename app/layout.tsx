@@ -45,9 +45,17 @@ export default function RootLayout({
               </svg>
               Lastro
             </Link>
-            <span className="ml-auto rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">
-              Prova de conceito
-            </span>
+            <div className="ml-auto flex items-center gap-3">
+              <Link
+                href="/como-verificamos"
+                className="text-xs text-slate-300 underline-offset-4 hover:text-white hover:underline"
+              >
+                Como verificamos
+              </Link>
+              <span className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">
+                Prova de conceito
+              </span>
+            </div>
           </div>
         </header>
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-10">

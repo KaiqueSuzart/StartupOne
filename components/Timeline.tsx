@@ -1,3 +1,4 @@
+import type { LedgerEntry } from "@/domain/ledger";
 import type { ServiceRecord } from "@/domain/types";
 import { TimelineItem } from "./TimelineItem";
 
@@ -5,10 +6,13 @@ interface TimelineProps {
   records: ServiceRecord[];
   /** Ids dos registros sinalizados pela detecção de anomalia. */
   flaggedIds: ReadonlySet<string>;
+  ledger: LedgerEntry[];
 }
 
 /** Linha do tempo cronológica: do registro inicial à revisão mais recente. */
-export function Timeline({ records, flaggedIds }: TimelineProps) {
+export function Timeline({ records, flaggedIds, ledger }: TimelineProps) {
+  const ledgerByRecord = new Map(ledger.map((entry) => [entry.recordId, entry]));
+
   return (
     <section aria-label="Linha do tempo do veículo">
       <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-500">
@@ -20,9 +24,16 @@ export function Timeline({ records, flaggedIds }: TimelineProps) {
             key={record.id}
             record={record}
             anomalous={flaggedIds.has(record.id)}
+            ledgerEntry={ledgerByRecord.get(record.id)}
           />
         ))}
       </ol>
+      <p className="mt-4 rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-600">
+        <strong className="font-semibold">Simulação de encadeamento:</strong> os
+        hashes acima são gerados localmente para demonstrar o conceito — cada
+        registro depende do anterior, então alterar um evento quebraria todos os
+        seguintes. Na próxima fase esse encadeamento será ancorado em blockchain.
+      </p>
     </section>
   );
 }

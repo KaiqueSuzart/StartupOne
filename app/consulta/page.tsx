@@ -26,7 +26,12 @@ export default async function ConsultaPage({
       return <EmptyState query={result.query} />;
     case "found":
       return (
-        <VehicleReport history={result.history} anomalies={result.anomalies} />
+        <VehicleReport
+          history={result.history}
+          anomalies={result.anomalies}
+          mileage={result.mileage}
+          ledger={result.ledger}
+        />
       );
   }
 }
