@@ -70,19 +70,58 @@ export default function RootLayout({
         <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-10">
           {children}
         </main>
-        <footer className="border-t border-slate-200 bg-white">
-          <div className="mx-auto flex w-full max-w-4xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-5 text-xs text-slate-500">
-            <span>
-              <strong className="font-semibold text-slate-700">
-                Dados simulados.
-              </strong>{" "}
-              Nenhum veículo real é consultado — esta é uma prova de conceito
-              para validar a experiência de consulta.
-            </span>
+        <footer className="mt-auto border-t border-slate-200 bg-white">
+          <div className="mx-auto w-full max-w-4xl px-4 py-8">
+            <div className="flex flex-wrap items-start justify-between gap-6">
+              <div className="max-w-sm">
+                <div className="flex items-center gap-2 font-bold text-slate-900">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-600">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-4 w-4 fill-white"
+                    >
+                      <path d="M12 1.5 4 4.8v6.3c0 5 3.4 9.7 8 11.4 4.6-1.7 8-6.4 8-11.4V4.8L12 1.5Zm-1.2 14.6-3.3-3.3 1.4-1.4 1.9 1.9 4.3-4.3 1.4 1.4-5.7 5.7Z" />
+                    </svg>
+                  </span>
+                  Lastro
+                </div>
+                <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                  <strong className="font-semibold text-slate-700">
+                    Dados simulados.
+                  </strong>{" "}
+                  Nenhum veículo real é consultado — esta é uma prova de
+                  conceito para validar a experiência de consulta.
+                </p>
+              </div>
+              <nav className="flex flex-col gap-2 text-sm">
+                <Link
+                  href="/"
+                  className="text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
+                >
+                  Consultar veículo
+                </Link>
+                <Link
+                  href="/como-verificamos"
+                  className="text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
+                >
+                  Como verificamos
+                </Link>
+                <Link
+                  href="/oficina/registrar"
+                  className="text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
+                >
+                  Área da oficina
+                </Link>
+              </nav>
+            </div>
             {/* Torna a costura do repositório visível na própria demo. */}
-            <span className="ml-auto shrink-0 rounded-full bg-slate-100 px-2.5 py-1 font-mono text-[11px] text-slate-600">
-              fonte: {activeDataSource === "supabase" ? "Supabase" : "fixtures"}
-            </span>
+            <div className="mt-6 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4 text-[11px] text-slate-400">
+              <span>Prova de conceito · sem blockchain nesta fase</span>
+              <span className="ml-auto rounded-full bg-slate-100 px-2.5 py-1 font-mono text-slate-600">
+                fonte: {activeDataSource === "supabase" ? "Supabase" : "fixtures"}
+              </span>
+            </div>
           </div>
         </footer>
       </body>

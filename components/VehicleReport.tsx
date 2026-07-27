@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { VehicleReport as VehicleReportData } from "@/lib/report";
 import { AnomalyAlert } from "./AnomalyAlert";
+import { CoverageCard } from "./CoverageCard";
 import { HistoryNotices } from "./HistoryNotices";
 import { MaintenanceAlerts } from "./MaintenanceAlerts";
 import { MileageChart } from "./MileageChart";
@@ -25,6 +26,7 @@ export function VehicleReport({
   mileage,
   ownership,
   maintenance,
+  coverage,
   ledger,
 }: VehicleReportProps) {
   const flaggedIds = new Set(anomalies.map((a) => a.recordId));
@@ -47,6 +49,7 @@ export function VehicleReport({
       <RecallNotices recalls={history.recalls} />
       <MaintenanceAlerts alerts={maintenance} />
       <HistoryNotices issues={integrity} />
+      <CoverageCard coverage={coverage} />
       <MileageChart records={history.records} flaggedIds={flaggedIds} />
       <Timeline
         records={history.records}

@@ -46,7 +46,7 @@ export function DemoPlateLinks() {
         {DEMO_PLATES.map(({ plate, title, detail, tone }) => (
           <Link
             key={plate}
-            href={`/consulta?placa=${plate}`}
+            href={`/consulta/${plate}`}
             className="card group flex items-center gap-4 p-4 text-left transition-all hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md"
           >
             <PlateBadge plate={plate} />

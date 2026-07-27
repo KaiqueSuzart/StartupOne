@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { InterestForm } from "./InterestForm";
 import { PlateBadge } from "./PlateBadge";
 import { SearchForm } from "./SearchForm";
 
@@ -35,6 +36,9 @@ export function EmptyState({ query }: EmptyStateProps) {
           ninguém registrou nada. A cobertura cresce conforme oficinas e
           concessionárias aderem.
         </p>
+        <div className="mt-6 border-t border-slate-100 pt-5">
+          <InterestForm plate={query} />
+        </div>
       </div>
       <SearchForm />
       <Link

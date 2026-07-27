@@ -7,6 +7,7 @@ import {
   type MaintenanceAlert,
 } from "@/domain/maintenance";
 import { summarizeMileage, type MileageSummary } from "@/domain/mileage";
+import { summarizeCoverage, type CoverageSummary } from "@/domain/coverage";
 import { summarizeOwnership, type OwnershipSummary } from "@/domain/ownership";
 import { summarizeVerdict, type VerdictSummary } from "@/domain/verdict";
 import type { VehicleHistory } from "@/domain/types";
@@ -27,6 +28,7 @@ export interface VehicleReport {
   mileage: MileageSummary | null;
   ownership: OwnershipSummary;
   maintenance: MaintenanceAlert[];
+  coverage: CoverageSummary;
   /** Cadeia de hashes simulada — evidência didática de imutabilidade. */
   ledger: LedgerEntry[];
 }
@@ -57,10 +59,8 @@ export async function lookupVehicleReport(
   const anomalies = detectOdometerAnomalies(history.records);
   const integrity = detectIntegrityIssues(history.records);
   // Data de hoje injetada na borda: o domínio não lê o relógio.
-  const maintenance = detectMaintenanceAlerts(
-    history.records,
-    new Date().toISOString().slice(0, 10),
-  );
+  const today = new Date().toISOString().slice(0, 10);
+  const maintenance = detectMaintenanceAlerts(history.records, today);
 
   return {
     status: "found",
@@ -76,6 +76,7 @@ export async function lookupVehicleReport(
     }),
     mileage: summarizeMileage(history.records),
     ownership: summarizeOwnership(history.records),
+    coverage: summarizeCoverage(history.records, today),
     ledger: buildLedgerChain(history.records),
   };
 }

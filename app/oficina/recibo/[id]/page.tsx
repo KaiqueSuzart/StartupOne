@@ -79,7 +79,7 @@ export default async function ReciboPage({ params }: ReciboPageProps) {
 
       <div className="mt-5 flex flex-wrap gap-3">
         <Link
-          href={`/consulta?placa=${record.plate}`}
+          href={`/consulta/${record.plate}`}
           className="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
         >
           Ver como o comprador vê

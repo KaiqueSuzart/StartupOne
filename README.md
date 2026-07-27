@@ -32,8 +32,16 @@ Outros comandos: `npm run test` (Vitest), `npm run build`, `npm run lint`,
 | `XYZ9A87` | **Fraude de odômetro** (88.500 → 52.000 km) + registro retroativo + lacunas |
 | `AAA0A00` | Placa válida sem histórico (estado vazio) |
 
-Funciona também por VIN (ex.: `9BWZZZ377VT004251`) e por deep-link:
-`http://localhost:3000/?placa=XYZ9A87`.
+A URL canônica do relatório é `/consulta/XYZ9A87` — compartilhável e com
+**imagem de preview própria**, que mostra o veredito do veículo quando o link
+é enviado em WhatsApp, Slack ou redes. `/consulta?placa=X` e `/?placa=X`
+continuam funcionando e redirecionam para ela. Funciona também por VIN
+(ex.: `9BWZZZ377VT004251`).
+
+Em placa válida sem histórico, a tela oferece deixar um e-mail para ser
+avisado. É a métrica que responde à pergunta da PoC — os e-mails ficam em
+`vehicle_interest`, gravável por qualquer visitante e **legível apenas pelo
+administrador do banco** (LGPD).
 
 ## Área da oficina (registrar um serviço)
 
@@ -84,7 +92,8 @@ dependência da interface. Para provisionar:
    [`supabase/schema.sql`](supabase/schema.sql) →
    [`supabase/seed.sql`](supabase/seed.sql) (gerado a partir dos fixtures) →
    [`supabase/workshop.sql`](supabase/workshop.sql) (ponta de escrita) →
-   [`supabase/seed_workshops.sql`](supabase/seed_workshops.sql) (oficinas de teste).
+   [`supabase/seed_workshops.sql`](supabase/seed_workshops.sql) (oficinas de teste) →
+   [`supabase/interest.sql`](supabase/interest.sql) (captura de interesse).
 2. Copie `.env.example` para `.env.local` e preencha `SUPABASE_URL` e
    `SUPABASE_ANON_KEY`.
 
