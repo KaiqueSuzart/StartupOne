@@ -61,6 +61,8 @@ export default async function RegistrarPage({
       <div className="card mt-5 p-6">
         <ServiceForm
           query={raw ?? ""}
+          workshopCnpj={workshop.cnpj}
+          today={new Date().toISOString().slice(0, 10)}
           vehicle={
             history === null
               ? null

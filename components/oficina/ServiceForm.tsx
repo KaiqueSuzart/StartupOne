@@ -5,16 +5,19 @@ import {
   registerServiceAction,
   type RegisterState,
 } from "@/app/oficina/registrar/actions";
+import { NfeKeyField } from "./NfeKeyField";
+import { OdometerDateFields } from "./OdometerDateFields";
+import { PhotoField } from "./PhotoField";
 import { PlateLookupField } from "./PlateLookupField";
-import {
-  SelectedVehicleCard,
-  type VehicleBrief,
-} from "./SelectedVehicleCard";
+import { SelectedVehicleCard, type VehicleBrief } from "./SelectedVehicleCard";
 
 interface ServiceFormProps {
   query: string;
   vehicle: VehicleBrief | null;
   notFound: boolean;
+  workshopCnpj: string;
+  /** Data de hoje vinda do servidor: evita divergência na hidratação. */
+  today: string;
 }
 
 const INITIAL: RegisterState = { errors: [] };
@@ -32,7 +35,13 @@ const SERVICE_TYPES = [
   ["other", "Outro serviço"],
 ] as const;
 
-export function ServiceForm({ query, vehicle, notFound }: ServiceFormProps) {
+export function ServiceForm({
+  query,
+  vehicle,
+  notFound,
+  workshopCnpj,
+  today,
+}: ServiceFormProps) {
   const [state, formAction, pending] = useActionState(
     registerServiceAction,
     INITIAL,
@@ -47,89 +56,59 @@ export function ServiceForm({ query, vehicle, notFound }: ServiceFormProps) {
       <SelectedVehicleCard vehicle={vehicle} />
       <input type="hidden" name="plate" value={vehicle.plate} />
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className="mb-1 block text-sm font-medium text-slate-700">
-            Quilometragem atual
-          </span>
-          <input
-            name="odometerKm"
-            type="number"
-            inputMode="numeric"
-            required
-            min={vehicle.lastKm ?? 0}
-            placeholder="Ex.: 62400"
-            className={FIELD}
-          />
-        </label>
-        <label className="block">
-          <span className="mb-1 block text-sm font-medium text-slate-700">
-            Data do serviço
-          </span>
-          <input name="serviceDate" type="date" required className={FIELD} />
-        </label>
-      </div>
+      <OdometerDateFields
+        lastKm={vehicle.lastKm}
+        today={today}
+        fieldClassName={FIELD}
+      />
 
-      <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">
+      <div>
+        <label
+          htmlFor="serviceType"
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
           Tipo de serviço
-        </span>
-        <select name="serviceType" required defaultValue="" className={FIELD}>
-          <option value="" disabled>
-            Selecione
-          </option>
+        </label>
+        <select
+          id="serviceType"
+          name="serviceType"
+          required
+          defaultValue="scheduled_maintenance"
+          className={FIELD}
+        >
           {SERVICE_TYPES.map(([value, label]) => (
             <option key={value} value={value}>
               {label}
             </option>
           ))}
         </select>
-      </label>
+      </div>
 
-      <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">
-          Chave da NF-e (44 dígitos)
-        </span>
-        <input
-          name="nfeKey"
-          inputMode="numeric"
-          required
-          placeholder="Cole a chave de acesso da nota"
-          className={`${FIELD} font-mono text-sm`}
-        />
-      </label>
+      <NfeKeyField workshopCnpj={workshopCnpj} />
+      <PhotoField />
 
-      <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">
-          Foto do odômetro
-        </span>
+      <div>
+        <label
+          htmlFor="description"
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
+          Descrição{" "}
+          <span className="font-normal text-slate-400">(opcional)</span>
+        </label>
         <input
-          name="photo"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          capture="environment"
-          required
-          className="w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
-        />
-        <span className="mt-1 block text-xs text-slate-500">
-          Fica privada: o relatório público mostra apenas o hash da imagem.
-        </span>
-      </label>
-
-      <label className="block">
-        <span className="mb-1 block text-sm font-medium text-slate-700">
-          Descrição <span className="font-normal text-slate-400">(opcional)</span>
-        </span>
-        <input
+          id="description"
           name="description"
           maxLength={300}
           placeholder="Ex.: troca de óleo e filtros"
           className={FIELD}
         />
-      </label>
+      </div>
 
       {state.errors.length > 0 && (
-        <ul role="alert" className="space-y-1 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
+        <ul
+          role="alert"
+          className="space-y-1 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800"
+        >
           {state.errors.map((error) => (
             <li key={error}>{error}</li>
           ))}
