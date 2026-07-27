@@ -44,7 +44,10 @@ Acesse **/oficina/login** com uma das credenciais de demonstração:
 | `oficina.central@lastro.dev` | `lastro-demo-2026` | 11.222.333/0001-81 |
 | `auto.center@lastro.dev` | `lastro-demo-2026` | 04.252.011/0001-10 |
 
-O fluxo é: placa → km → tipo de serviço → chave da NF-e → foto do odômetro. Ao
+O fluxo é: placa → km → tipo de serviço → **itens trocados** → **próxima
+revisão** → chave da NF-e → foto do odômetro. Os itens são categorias (sem
+valor nem quantidade) e alimentam os **alertas de manutenção vencida** no
+relatório do comprador. Ao
 gravar, a oficina recebe um **recibo com o elo do registro na cadeia**
 (`/oficina/recibo/[id]`) e pode rever tudo que enviou em `/oficina/registros`.
 O registro aparece **na hora** no relatório do comprador e **não pode ser
@@ -67,6 +70,10 @@ node --env-file=.env.local scripts/verify-append-only.mjs
 
 Verifica, contra o banco real e com sessão de oficina válida, que UPDATE e
 DELETE são negados e que ninguém grava em nome de outra oficina.
+
+O fluxo completo pela interface (login → formulário → foto → recibo) tem teste
+de ponta a ponta em `scripts/e2e-oficina.mjs` — instruções no cabeçalho do
+arquivo.
 
 ## Banco de dados
 

@@ -2,6 +2,10 @@ import { classifyIdentifier } from "@/domain/plate";
 import { detectOdometerAnomalies, type AnomalyFlag } from "@/domain/anomaly";
 import { detectIntegrityIssues, type IntegrityIssue } from "@/domain/integrity";
 import { buildLedgerChain, type LedgerEntry } from "@/domain/ledger";
+import {
+  detectMaintenanceAlerts,
+  type MaintenanceAlert,
+} from "@/domain/maintenance";
 import { summarizeMileage, type MileageSummary } from "@/domain/mileage";
 import { summarizeOwnership, type OwnershipSummary } from "@/domain/ownership";
 import { summarizeVerdict, type VerdictSummary } from "@/domain/verdict";
@@ -22,6 +26,7 @@ export interface VehicleReport {
   verdict: VerdictSummary;
   mileage: MileageSummary | null;
   ownership: OwnershipSummary;
+  maintenance: MaintenanceAlert[];
   /** Cadeia de hashes simulada — evidência didática de imutabilidade. */
   ledger: LedgerEntry[];
 }
@@ -51,16 +56,23 @@ export async function lookupVehicleReport(
 
   const anomalies = detectOdometerAnomalies(history.records);
   const integrity = detectIntegrityIssues(history.records);
+  // Data de hoje injetada na borda: o domínio não lê o relógio.
+  const maintenance = detectMaintenanceAlerts(
+    history.records,
+    new Date().toISOString().slice(0, 10),
+  );
 
   return {
     status: "found",
     history,
     anomalies,
     integrity,
+    maintenance,
     verdict: summarizeVerdict({
       anomalies,
       integrity,
       recalls: history.recalls,
+      maintenance,
     }),
     mileage: summarizeMileage(history.records),
     ownership: summarizeOwnership(history.records),

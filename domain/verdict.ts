@@ -1,5 +1,6 @@
 import type { AnomalyFlag } from "./anomaly";
 import type { IntegrityIssue } from "./integrity";
+import type { MaintenanceAlert } from "./maintenance";
 import type { RecallNotice } from "./types";
 
 /**
@@ -18,18 +19,22 @@ export interface VerdictSummary {
   integrityAlerts: number;
   pendingRecalls: number;
   historyGaps: number;
+  /** Itens de manutenção vencidos (não inclui "sem registro"). */
+  overdueMaintenance: number;
 }
 
 interface VerdictInput {
   anomalies: readonly AnomalyFlag[];
   integrity: readonly IntegrityIssue[];
   recalls: readonly RecallNotice[];
+  maintenance?: readonly MaintenanceAlert[];
 }
 
 export function summarizeVerdict({
   anomalies,
   integrity,
   recalls,
+  maintenance = [],
 }: VerdictInput): VerdictSummary {
   const integrityAlerts = integrity.filter(
     (issue) => issue.severity === "alert",
@@ -38,13 +43,16 @@ export function summarizeVerdict({
     (issue) => issue.type === "history_gap",
   ).length;
   const pendingRecalls = recalls.filter((r) => r.status === "pending").length;
+  const overdueMaintenance = maintenance.filter(
+    (alert) => alert.severity === "alert",
+  ).length;
 
-  // Fraude de km e adulteração de datas condenam o veredito; recall aberto e
-  // lacunas pedem atenção, mas não são indício de adulteração.
+  // Fraude de km e adulteração de datas condenam o veredito; recall aberto,
+  // manutenção vencida e lacunas pedem atenção, mas não são adulteração.
   const level: VerdictLevel =
     anomalies.length > 0 || integrityAlerts > 0
       ? "critical"
-      : pendingRecalls > 0 || historyGaps > 0
+      : pendingRecalls > 0 || historyGaps > 0 || overdueMaintenance > 0
         ? "attention"
         : "clean";
 
@@ -54,5 +62,6 @@ export function summarizeVerdict({
     integrityAlerts,
     pendingRecalls,
     historyGaps,
+    overdueMaintenance,
   };
 }

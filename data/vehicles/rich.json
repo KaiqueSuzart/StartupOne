@@ -26,7 +26,11 @@
       "workshop": "Concessionária Vector Chevrolet",
       "attestor": "dealership",
       "serviceType": "scheduled_maintenance",
-      "description": "Revisão de 1 ano: troca de óleo e filtros, verificação de freios."
+      "description": "Revisão de 1 ano: troca de óleo e filtros, verificação de freios.",
+      "items": [
+        "oil_and_filter",
+        "air_filter"
+      ]
     },
     {
       "id": "rich-003",
@@ -36,7 +40,10 @@
       "workshop": "Oficina Mecânica Central",
       "attestor": "independent_workshop",
       "serviceType": "oil_change",
-      "description": "Troca de óleo e filtro de óleo fora da rede autorizada."
+      "description": "Troca de óleo e filtro de óleo fora da rede autorizada.",
+      "items": [
+        "oil_and_filter"
+      ]
     },
     {
       "id": "rich-004",
@@ -46,7 +53,10 @@
       "workshop": "Oficina Mecânica Central",
       "attestor": "independent_workshop",
       "serviceType": "brakes",
-      "description": "Substituição de pastilhas e discos dianteiros; fluido de freio novo."
+      "description": "Substituição de pastilhas e discos dianteiros; fluido de freio novo.",
+      "items": [
+        "brake_pads"
+      ]
     },
     {
       "id": "rich-transfer-1",
@@ -66,7 +76,11 @@
       "workshop": "Pneus & Cia",
       "attestor": "independent_workshop",
       "serviceType": "tires",
-      "description": "Troca dos quatro pneus; alinhamento e balanceamento."
+      "description": "Troca dos quatro pneus; alinhamento e balanceamento.",
+      "items": [
+        "tires",
+        "alignment"
+      ]
     },
     {
       "id": "rich-006",
@@ -76,7 +90,10 @@
       "workshop": "Oficina Mecânica Central",
       "attestor": "independent_workshop",
       "serviceType": "suspension",
-      "description": "Substituição de amortecedores dianteiros e bieletas."
+      "description": "Substituição de amortecedores dianteiros e bieletas.",
+      "items": [
+        "shock_absorbers"
+      ]
     },
     {
       "id": "rich-007",
@@ -86,7 +103,10 @@
       "workshop": "Auto Elétrica Farol Norte",
       "attestor": "independent_workshop",
       "serviceType": "electrical",
-      "description": "Substituição da bateria e revisão do alternador."
+      "description": "Substituição da bateria e revisão do alternador.",
+      "items": [
+        "battery"
+      ]
     },
     {
       "id": "rich-008",
@@ -96,7 +116,13 @@
       "workshop": "Oficina Mecânica Central",
       "attestor": "independent_workshop",
       "serviceType": "scheduled_maintenance",
-      "description": "Revisão completa: óleo, filtros, correia dentada e velas."
+      "description": "Revisão completa: óleo, filtros, correia dentada e velas.",
+      "items": [
+        "oil_and_filter",
+        "timing_belt",
+        "spark_plugs"
+      ],
+      "nextServiceKm": 105000
     }
   ],
   "recalls": [

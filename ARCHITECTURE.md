@@ -122,6 +122,9 @@ testadas em `tests/`:
   propriedade é um evento da MESMA linha do tempo (`ownership_transfer`),
   porque registra quilometragem — é o que a vistoria e o RENAVE fazem — e por
   isso também alimenta a detecção de anomalia.
+- `maintenance.ts` — itens vencidos por tempo/quilometragem e revisão prevista
+  já ultrapassada. Deriva tudo dos itens registrados: nenhum campo extra é
+  preenchido pela oficina para o alerta existir.
 - `nfe.ts` / `cnpj.ts` / `serviceEntry.ts` — validação da nota fiscal, do CNPJ
   e a regra de aceitação de um novo registro.
 - `integrity.ts` — integridade da linha do tempo: registro retroativo

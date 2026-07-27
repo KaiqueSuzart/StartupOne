@@ -37,6 +37,13 @@ create table if not exists public.service_records (
 create index if not exists service_records_vin_date_idx
   on public.service_records (vin, service_date);
 
+-- Itens trocados/revisados e próxima revisão prevista. Categorias, sem valor
+-- nem quantidade: detalhe útil ao comprador sem virar rastro fiscal.
+alter table public.service_records
+  add column if not exists service_items text[] not null default '{}',
+  add column if not exists next_service_km integer
+    check (next_service_km is null or next_service_km >= 0);
+
 -- Os CHECKs acompanham a evolução do domínio e precisam ser recriados
 -- explicitamente: `create table if not exists` não altera tabela existente.
 alter table public.service_records

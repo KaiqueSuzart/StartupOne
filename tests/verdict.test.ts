@@ -52,6 +52,7 @@ describe("summarizeVerdict", () => {
       integrityAlerts: 0,
       pendingRecalls: 0,
       historyGaps: 0,
+      overdueMaintenance: 0,
     });
   });
 
@@ -78,6 +79,35 @@ describe("summarizeVerdict", () => {
     expect(verdict.level).toBe("attention");
     expect(verdict.historyGaps).toBe(1);
     expect(verdict.integrityAlerts).toBe(0);
+  });
+
+  it("pede atenção com manutenção vencida", () => {
+    const verdict = summarizeVerdict({
+      ...empty,
+      maintenance: [
+        {
+          type: "overdue_item",
+          severity: "alert",
+          item: "brake_fluid",
+          lastDate: "2022-01-10",
+          monthsSince: 54,
+          kmSince: 20000,
+        },
+      ],
+    });
+    expect(verdict.level).toBe("attention");
+    expect(verdict.overdueMaintenance).toBe(1);
+  });
+
+  it("não conta 'sem registro' como manutenção vencida", () => {
+    const verdict = summarizeVerdict({
+      ...empty,
+      maintenance: [
+        { type: "never_recorded", severity: "notice", item: "timing_belt" },
+      ],
+    });
+    expect(verdict.level).toBe("clean");
+    expect(verdict.overdueMaintenance).toBe(0);
   });
 
   it("fraude prevalece sobre achados menores", () => {

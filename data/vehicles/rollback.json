@@ -26,7 +26,11 @@
       "workshop": "Concessionária Rota Renault",
       "attestor": "dealership",
       "serviceType": "scheduled_maintenance",
-      "description": "Revisão de 30.000 km: óleo, filtros e correia do alternador."
+      "description": "Revisão de 30.000 km: óleo, filtros e correia do alternador.",
+      "items": [
+        "oil_and_filter",
+        "air_filter"
+      ]
     },
     {
       "id": "rb-003",
@@ -36,7 +40,12 @@
       "workshop": "Oficina do Bairro",
       "attestor": "independent_workshop",
       "serviceType": "scheduled_maintenance",
-      "description": "Revisão de 60.000 km: óleo, filtros, velas e fluido de arrefecimento."
+      "description": "Revisão de 60.000 km: óleo, filtros, velas e fluido de arrefecimento.",
+      "items": [
+        "oil_and_filter",
+        "spark_plugs",
+        "coolant"
+      ]
     },
     {
       "id": "rb-004",
@@ -46,7 +55,10 @@
       "workshop": "Oficina do Bairro",
       "attestor": "independent_workshop",
       "serviceType": "brakes",
-      "description": "Troca de pastilhas traseiras e revisão do freio de estacionamento."
+      "description": "Troca de pastilhas traseiras e revisão do freio de estacionamento.",
+      "items": [
+        "brake_pads"
+      ]
     },
     {
       "id": "rb-transfer-1",
@@ -66,7 +78,10 @@
       "workshop": "Auto Center Estrada Real",
       "attestor": "independent_workshop",
       "serviceType": "oil_change",
-      "description": "Troca de óleo e filtro antes de anúncio de venda."
+      "description": "Troca de óleo e filtro antes de anúncio de venda.",
+      "items": [
+        "oil_and_filter"
+      ]
     },
     {
       "id": "rb-006",
@@ -76,7 +91,12 @@
       "workshop": "Auto Center Estrada Real",
       "attestor": "independent_workshop",
       "serviceType": "tires",
-      "description": "Troca de dois pneus dianteiros e balanceamento."
+      "description": "Troca de dois pneus dianteiros e balanceamento.",
+      "items": [
+        "tires",
+        "alignment"
+      ],
+      "nextServiceKm": 68000
     },
     {
       "id": "rb-transfer-2",

@@ -32,6 +32,8 @@ export class SupabaseServiceRecordWriter implements ServiceRecordWriter {
       attestor: "independent_workshop",
       service_type: input.serviceType,
       description: input.description,
+      service_items: input.items,
+      next_service_km: input.nextServiceKm,
       workshop_id: input.workshopId,
       nfe_key: input.nfeKey,
       nfe_emitter_cnpj: input.nfeEmitterCnpj,

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { serviceItemSchema } from "@/lib/schema";
 
 /**
  * Validação da entrada bruta do formulário antes de qualquer uso. As regras
@@ -24,6 +25,12 @@ export const serviceFormSchema = z.object({
   serviceDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "data inválida"),
   description: z.string().max(300, "descrição muito longa").default(""),
   nfeKey: z.string().min(1, "informe a chave da NF-e"),
+  items: z.array(serviceItemSchema).default([]),
+  // Campo vazio no formulário chega como "" e significa "não informado".
+  nextServiceKm: z
+    .union([z.literal(""), z.coerce.number().int().min(0).max(2_000_000)])
+    .default("")
+    .transform((value) => (value === "" ? null : value)),
 });
 
 export type ServiceFormInput = z.infer<typeof serviceFormSchema>;

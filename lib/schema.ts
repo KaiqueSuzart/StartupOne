@@ -12,6 +12,21 @@ const isoDateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "data deve estar no formato YYYY-MM-DD");
 
+export const serviceItemSchema = z.enum([
+  "oil_and_filter",
+  "air_filter",
+  "spark_plugs",
+  "timing_belt",
+  "brake_pads",
+  "brake_fluid",
+  "coolant",
+  "battery",
+  "clutch",
+  "shock_absorbers",
+  "tires",
+  "alignment",
+]);
+
 const serviceEvidenceSchema = z.object({
   nfeKey: z.string().regex(/^\d{44}$/),
   emitterCnpj: z.string().regex(/^\d{14}$/),
@@ -45,6 +60,8 @@ export const serviceRecordSchema = z.object({
     "other",
   ]),
   description: z.string(),
+  items: z.array(serviceItemSchema).optional(),
+  nextServiceKm: z.number().int().min(0).optional(),
   evidence: serviceEvidenceSchema.optional(),
 });
 

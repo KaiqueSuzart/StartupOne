@@ -1,4 +1,4 @@
-import type { AttestorType, ServiceType } from "@/domain/types";
+import type { AttestorType, ServiceItem, ServiceType } from "@/domain/types";
 
 /** Helpers de apresentação em pt-BR. Sem regra de negócio aqui. */
 
@@ -50,6 +50,21 @@ export const ATTESTOR_LABELS: Record<AttestorType, string> = {
   inspection: "Vistoria",
   registry: "Órgão de registro",
   owner: "Proprietário",
+};
+
+export const SERVICE_ITEM_LABELS: Record<ServiceItem, string> = {
+  oil_and_filter: "Óleo e filtro",
+  air_filter: "Filtro de ar",
+  spark_plugs: "Velas",
+  timing_belt: "Correia dentada",
+  brake_pads: "Pastilhas de freio",
+  brake_fluid: "Fluido de freio",
+  coolant: "Fluido de arrefecimento",
+  battery: "Bateria",
+  clutch: "Embreagem",
+  shock_absorbers: "Amortecedores",
+  tires: "Pneus",
+  alignment: "Alinhamento e balanceamento",
 };
 
 export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {

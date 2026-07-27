@@ -4,6 +4,7 @@ import {
   ATTESTOR_LABELS,
   formatDateBR,
   formatKm,
+  SERVICE_ITEM_LABELS,
   SERVICE_TYPE_LABELS,
 } from "@/lib/format";
 import { ServiceEvidenceRow } from "./ServiceEvidenceRow";
@@ -77,6 +78,25 @@ export function TimelineItem({
         )}
 
         <p className="mt-2 text-sm text-slate-600">{record.description}</p>
+
+        {record.items !== undefined && record.items.length > 0 && (
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {record.items.map((item) => (
+              <li
+                key={item}
+                className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-700"
+              >
+                {SERVICE_ITEM_LABELS[item]}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {record.nextServiceKm !== undefined && (
+          <p className="mt-2 text-xs text-slate-500">
+            Próxima revisão prevista: {formatKm(record.nextServiceKm)}
+          </p>
+        )}
 
         {record.evidence !== undefined && (
           <ServiceEvidenceRow evidence={record.evidence} />

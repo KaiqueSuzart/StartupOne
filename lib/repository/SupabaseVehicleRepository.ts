@@ -16,7 +16,8 @@ import type { VehicleRepository } from "./VehicleRepository";
 const SELECT = `
   vin, plate, make, model, model_year, color,
   service_records ( id, service_date, recorded_at, odometer_km, workshop,
-                    attestor, service_type, description, nfe_key,
+                    attestor, service_type, description, service_items,
+                    next_service_km, nfe_key,
                     nfe_emitter_cnpj, nfe_cnpj_mismatch, odometer_photo_hash ),
   recalls ( id, code, announced_at, system, description, status,
             resolved_by_record_id )

@@ -50,6 +50,25 @@ export type ServiceType =
   | "other";
 
 /**
+ * Itens trocados/revisados no serviço. São CATEGORIAS, sem valor nem
+ * quantidade: é o detalhe que o comprador quer ("trocou a correia?") sem
+ * criar o rastro fiscal que afasta a oficina do sistema.
+ */
+export type ServiceItem =
+  | "oil_and_filter"
+  | "air_filter"
+  | "spark_plugs"
+  | "timing_belt"
+  | "brake_pads"
+  | "brake_fluid"
+  | "coolant"
+  | "battery"
+  | "clutch"
+  | "shock_absorbers"
+  | "tires"
+  | "alignment";
+
+/**
  * Evidência anexada por uma oficina autenticada. Não prova que o serviço
  * físico ocorreu — prova que alguém identificável vinculou este km a uma
  * nota fiscal e a uma foto, e não pode mais desfazer isso (ver SECURITY.md).
@@ -78,6 +97,10 @@ export interface ServiceRecord {
   attestor: AttestorType;
   serviceType: ServiceType;
   description: string;
+  /** Itens trocados/revisados; vazio em registros históricos importados. */
+  items?: ServiceItem[];
+  /** Quilometragem prevista para a próxima revisão, quando informada. */
+  nextServiceKm?: number;
   /** Presente apenas em registros gravados pela ponta de escrita. */
   evidence?: ServiceEvidence;
 }

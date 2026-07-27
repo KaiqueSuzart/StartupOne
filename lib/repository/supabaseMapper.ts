@@ -13,6 +13,8 @@ export interface ServiceRecordRow {
   attestor: string;
   service_type: string;
   description: string | null;
+  service_items: string[] | null;
+  next_service_km: number | null;
   nfe_key: string | null;
   nfe_emitter_cnpj: string | null;
   nfe_cnpj_mismatch: boolean | null;
@@ -52,6 +54,14 @@ export function toVehicleHistory(row: VehicleRow): unknown {
       attestor: record.attestor,
       serviceType: record.service_type,
       description: record.description ?? "",
+      // Array vazio no banco vira ausência no domínio: "sem itens
+      // informados" e "lista vazia" são a mesma coisa aqui.
+      ...(record.service_items !== null && record.service_items.length > 0
+        ? { items: record.service_items }
+        : {}),
+      ...(record.next_service_km === null
+        ? {}
+        : { nextServiceKm: record.next_service_km }),
       // Evidência só existe em registro gravado pela ponta de escrita; os
       // registros históricos (concessionária, vistoria) não têm.
       ...(record.nfe_key !== null &&

@@ -9,6 +9,7 @@ import { NfeKeyField } from "./NfeKeyField";
 import { OdometerDateFields } from "./OdometerDateFields";
 import { PhotoField } from "./PhotoField";
 import { PlateLookupField } from "./PlateLookupField";
+import { ServiceItemsField } from "./ServiceItemsField";
 import { SelectedVehicleCard, type VehicleBrief } from "./SelectedVehicleCard";
 
 interface ServiceFormProps {
@@ -82,6 +83,27 @@ export function ServiceForm({
             </option>
           ))}
         </select>
+      </div>
+
+      <ServiceItemsField />
+
+      <div>
+        <label
+          htmlFor="nextServiceKm"
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
+          Próxima revisão em{" "}
+          <span className="font-normal text-slate-400">(km, opcional)</span>
+        </label>
+        <input
+          id="nextServiceKm"
+          name="nextServiceKm"
+          type="number"
+          inputMode="numeric"
+          min={0}
+          placeholder="Ex.: 72000"
+          className={FIELD}
+        />
       </div>
 
       <NfeKeyField workshopCnpj={workshopCnpj} />

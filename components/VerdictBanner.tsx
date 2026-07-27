@@ -58,6 +58,13 @@ function buildSummaryLines(verdict: VerdictSummary): string[] {
         : `${verdict.pendingRecalls} recalls pendentes`,
     );
   }
+  if (verdict.overdueMaintenance > 0) {
+    lines.push(
+      verdict.overdueMaintenance === 1
+        ? "1 item de manutenção vencido"
+        : `${verdict.overdueMaintenance} itens de manutenção vencidos`,
+    );
+  }
   if (verdict.historyGaps > 0) {
     lines.push(
       verdict.historyGaps === 1

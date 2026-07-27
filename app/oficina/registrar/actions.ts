@@ -33,7 +33,12 @@ export async function registerServiceAction(
     redirect("/oficina/login");
   }
 
-  const parsed = serviceFormSchema.safeParse(Object.fromEntries(formData));
+  // getAll: "items" chega repetido no FormData e fromEntries manteria só o
+  // último valor.
+  const parsed = serviceFormSchema.safeParse({
+    ...Object.fromEntries(formData),
+    items: formData.getAll("items"),
+  });
   if (!parsed.success) {
     return { errors: parsed.error.issues.map((issue) => issue.message) };
   }
@@ -98,6 +103,8 @@ export async function registerServiceAction(
     serviceDate: parsed.data.serviceDate,
     serviceType: parsed.data.serviceType,
     description: parsed.data.description,
+    items: parsed.data.items,
+    nextServiceKm: parsed.data.nextServiceKm,
     workshopName: workshop.name,
     nfeKey: decision.nfeKey,
     nfeEmitterCnpj: decision.emitterCnpj,

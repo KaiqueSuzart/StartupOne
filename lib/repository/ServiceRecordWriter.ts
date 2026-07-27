@@ -1,4 +1,4 @@
-import type { ServiceType } from "@/domain/types";
+import type { ServiceItem, ServiceType } from "@/domain/types";
 
 /**
  * Contrato da ponta de ESCRITA. Mesma filosofia do VehicleRepository: a tela
@@ -19,6 +19,8 @@ export interface NewServiceRecordInput {
   serviceDate: string;
   serviceType: ServiceType;
   description: string;
+  items: ServiceItem[];
+  nextServiceKm: number | null;
   workshopName: string;
   nfeKey: string;
   nfeEmitterCnpj: string;
