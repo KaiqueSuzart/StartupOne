@@ -9,9 +9,13 @@ não depende de nada.
   Domínio (domain/) — tipos + regras puras (anomalia, placa/VIN)
         ↑ implementado por
   Dados (lib/repository/)
-        ├── FixtureVehicleRepository → lê data/vehicles/*.json   (AGORA)
-        └── OnChainVehicleRepository → lê da blockchain via viem (FUTURO — não implementado)
+        ├── FixtureVehicleRepository  → lê data/vehicles/*.json          (padrão, sem config)
+        ├── SupabaseVehicleRepository → lê Postgres/Supabase via anon+RLS (com .env.local)
+        └── OnChainVehicleRepository  → lê da blockchain via viem        (FUTURO — não implementado)
 ```
+
+**A troca de fixtures para banco já aconteceu, e nenhum componente de tela mudou** —
+a prova prática de que a costura funciona.
 
 ## Fluxo de uma consulta
 
@@ -21,7 +25,7 @@ URL ?placa=xyz
     → lib/report.ts · lookupVehicleReport()          [composição]
         → domain/plate.ts · classifyIdentifier()     [puro]
         → lib/repository/index.ts · vehicleRepository [A COSTURA]
-            → FixtureVehicleRepository → JSON → Zod (lib/schema.ts)
+            → Fixture ou Supabase → Zod (lib/schema.ts) [MESMA validação]
         → domain/anomaly.ts · detectOdometerAnomalies() [puro]
     → components/* renderizam apenas dados validados e tipados
 ```
@@ -39,10 +43,19 @@ export interface VehicleRepository {
 ```
 
 A escolha da implementação acontece em **um único ponto**:
-[lib/repository/index.ts](lib/repository/index.ts). Na fase 2, o
+[lib/repository/index.ts](lib/repository/index.ts) — hoje ele escolhe Supabase quando há
+credenciais no ambiente e fixtures caso contrário. Na fase on-chain, o
 `OnChainVehicleRepository` implementará a mesma interface (lendo a chain via viem e
-validando as respostas com os **mesmos** schemas Zod de `lib/schema.ts`) e será trocado
-ali. **Nenhum arquivo de `app/`, `components/` ou `domain/` muda.**
+validando as respostas com os **mesmos** schemas Zod de `lib/schema.ts`) e entrará ali.
+**Nenhum arquivo de `app/`, `components/` ou `domain/` muda.**
+
+### O banco não é a arquitetura
+
+O Postgres é um detalhe de implementação atrás da interface: o domínio não sabe que ele
+existe, e `supabase/seed.sql` é gerado a partir dos mesmos fixtures — as duas fontes
+produzem exatamente o mesmo `VehicleHistory`. O esquema já reflete a tese do produto: o
+RLS libera apenas `SELECT`, sem policy de `UPDATE`/`DELETE`, tornando o histórico
+append-only para qualquer cliente.
 
 Regras para qualquer implementação: devolver só dados validados por Zod, registros
 ordenados por data ascendente, e receber identificadores já normalizados.

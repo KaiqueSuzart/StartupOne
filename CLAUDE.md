@@ -17,10 +17,12 @@ pluga depois (ver `ARCHITECTURE.md`).
 
 ## Escopo
 
-**Entra:** busca por placa/VIN (inclusive via `?placa=`), timeline do veículo, alerta de
-anomalia de km (funcionalidade de primeira classe), estados vazio/carregando, fixtures.
+**Entra:** busca por placa/VIN (inclusive via `?placa=`), timeline do veículo, veredito e
+alerta de anomalia de km (funcionalidade de primeira classe), recalls, integridade do
+histórico, estados vazio/carregando. Fonte de dados: fixtures por padrão, Supabase quando
+há `.env.local`.
 
-**Não entra (não construir):** blockchain/viem/carteiras, backend, banco, autenticação,
+**Não entra (não construir):** blockchain/viem/carteiras, autenticação,
 cadastro/escrita de revisões, deploy. Rodar em localhost basta.
 
 ## Regras inegociáveis
@@ -30,7 +32,8 @@ Detalhes em `.claude/rules/` e nos docs do repo — em resumo:
 1. Arquivos ≤ 150 linhas; um componente por arquivo; responsabilidade única.
 2. TypeScript `strict`, sem `any`; todo dado externo validado com Zod antes de renderizar.
 3. A UI só fala com dados via a interface `VehicleRepository`; a troca de implementação
-   acontece apenas em `lib/repository/index.ts` (a costura).
+   acontece apenas em `lib/repository/index.ts` (a costura). Nunca usar a chave
+   `service_role` do Supabase — só a anon, contida por RLS de leitura.
 4. Regras de negócio são funções puras em `domain/`, sempre com teste.
 5. Sem segredos no repo, sem `dangerouslySetInnerHTML`, sem PII nos fixtures.
 6. Não introduzir blockchain nem novas dependências sem justificativa.

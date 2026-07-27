@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { activeDataSource } from "@/lib/repository";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -64,12 +65,18 @@ export default function RootLayout({
           {children}
         </main>
         <footer className="border-t border-slate-200 bg-white">
-          <div className="mx-auto w-full max-w-4xl px-4 py-5 text-xs text-slate-500">
-            <strong className="font-semibold text-slate-700">
-              Dados simulados.
-            </strong>{" "}
-            Nenhum veículo real é consultado — esta é uma prova de conceito para
-            validar a experiência de consulta.
+          <div className="mx-auto flex w-full max-w-4xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-5 text-xs text-slate-500">
+            <span>
+              <strong className="font-semibold text-slate-700">
+                Dados simulados.
+              </strong>{" "}
+              Nenhum veículo real é consultado — esta é uma prova de conceito
+              para validar a experiência de consulta.
+            </span>
+            {/* Torna a costura do repositório visível na própria demo. */}
+            <span className="ml-auto shrink-0 rounded-full bg-slate-100 px-2.5 py-1 font-mono text-[11px] text-slate-600">
+              fonte: {activeDataSource === "supabase" ? "Supabase" : "fixtures"}
+            </span>
           </div>
         </footer>
       </body>

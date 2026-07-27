@@ -1,17 +1,31 @@
 import type { VehicleRepository } from "./VehicleRepository";
 import { FixtureVehicleRepository } from "./FixtureVehicleRepository";
+import { SupabaseVehicleRepository } from "./SupabaseVehicleRepository";
 
 // ── PONTO DE COMPOSIÇÃO ─────────────────────────────────────────────────
 // O ÚNICO lugar do sistema que decide qual implementação de
-// VehicleRepository alimenta o app. É aqui que a blockchain pluga depois:
+// VehicleRepository alimenta o app. Nenhum arquivo em app/, components/ ou
+// domain/ importa uma implementação concreta.
 //
-//   Fase 2: implementar OnChainVehicleRepository (lendo a chain via viem e
-//   validando as respostas com os MESMOS schemas de lib/schema.ts) e trocar
-//   a instância abaixo. Nenhum arquivo em app/, components/ ou domain/ muda.
+// Hoje: Supabase quando há credenciais no ambiente; fixtures locais caso
+// contrário — assim `git clone && npm run dev` funciona sem nenhum segredo.
 //
-// Nenhum outro módulo pode importar uma implementação concreta.
-// Detalhes em ARCHITECTURE.md.
+// Amanhã (fase on-chain): implementar OnChainVehicleRepository lendo a chain
+// via viem, validando com os MESMOS schemas de lib/schema.ts, e acrescentar
+// o caso aqui. A UI continua intacta. Detalhes em ARCHITECTURE.md.
+
+const url = process.env.SUPABASE_URL;
+const anonKey = process.env.SUPABASE_ANON_KEY;
+
 export const vehicleRepository: VehicleRepository =
-  new FixtureVehicleRepository();
+  url !== undefined && url !== "" && anonKey !== undefined && anonKey !== ""
+    ? new SupabaseVehicleRepository(url, anonKey)
+    : new FixtureVehicleRepository();
+
+/** Qual fonte está ativa — exibido no rodapé para deixar a costura visível. */
+export const activeDataSource: "supabase" | "fixtures" =
+  url !== undefined && url !== "" && anonKey !== undefined && anonKey !== ""
+    ? "supabase"
+    : "fixtures";
 
 export type { VehicleRepository } from "./VehicleRepository";
