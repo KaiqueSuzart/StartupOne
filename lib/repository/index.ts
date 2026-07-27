@@ -1,6 +1,9 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import type { VehicleRepository } from "./VehicleRepository";
+import type { ServiceRecordWriter } from "./ServiceRecordWriter";
 import { FixtureVehicleRepository } from "./FixtureVehicleRepository";
 import { SupabaseVehicleRepository } from "./SupabaseVehicleRepository";
+import { SupabaseServiceRecordWriter } from "./SupabaseServiceRecordWriter";
 
 // ── PONTO DE COMPOSIÇÃO ─────────────────────────────────────────────────
 // O ÚNICO lugar do sistema que decide qual implementação de
@@ -28,4 +31,15 @@ export const activeDataSource: "supabase" | "fixtures" =
     ? "supabase"
     : "fixtures";
 
+// A ESCRITA tem sua própria costura. Diferente da leitura, ela não pode ser
+// um singleton: cada gravação usa a sessão da oficina autenticada naquela
+// requisição. Quando a escrita on-chain existir, é esta função que passa a
+// devolver a outra implementação.
+export function createServiceRecordWriter(
+  client: SupabaseClient,
+): ServiceRecordWriter {
+  return new SupabaseServiceRecordWriter(client);
+}
+
 export type { VehicleRepository } from "./VehicleRepository";
+export type { ServiceRecordWriter } from "./ServiceRecordWriter";

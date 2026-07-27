@@ -6,6 +6,7 @@ import {
   formatKm,
   SERVICE_TYPE_LABELS,
 } from "@/lib/format";
+import { ServiceEvidenceRow } from "./ServiceEvidenceRow";
 import { ServiceIcon } from "./ServiceIcon";
 import { VerifiedSeal } from "./VerifiedSeal";
 
@@ -76,6 +77,10 @@ export function TimelineItem({
         )}
 
         <p className="mt-2 text-sm text-slate-600">{record.description}</p>
+
+        {record.evidence !== undefined && (
+          <ServiceEvidenceRow evidence={record.evidence} />
+        )}
 
         <footer className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
           <span

@@ -12,6 +12,13 @@ const isoDateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "data deve estar no formato YYYY-MM-DD");
 
+const serviceEvidenceSchema = z.object({
+  nfeKey: z.string().regex(/^\d{44}$/),
+  emitterCnpj: z.string().regex(/^\d{14}$/),
+  cnpjMismatch: z.boolean(),
+  photoHash: z.string().regex(/^[a-f0-9]{64}$/),
+});
+
 export const serviceRecordSchema = z.object({
   id: z.string().min(1),
   date: isoDateSchema,
@@ -36,6 +43,7 @@ export const serviceRecordSchema = z.object({
     "other",
   ]),
   description: z.string(),
+  evidence: serviceEvidenceSchema.optional(),
 });
 
 export const vehicleSchema = z.object({

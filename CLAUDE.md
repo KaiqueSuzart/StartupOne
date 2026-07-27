@@ -17,13 +17,13 @@ pluga depois (ver `ARCHITECTURE.md`).
 
 ## Escopo
 
-**Entra:** busca por placa/VIN (inclusive via `?placa=`), timeline do veículo, veredito e
-alerta de anomalia de km (funcionalidade de primeira classe), recalls, integridade do
-histórico, estados vazio/carregando. Fonte de dados: fixtures por padrão, Supabase quando
-há `.env.local`.
+**Entra:** consulta por placa/VIN (inclusive via `?placa=`), timeline, veredito e alerta
+de anomalia de km (funcionalidade de primeira classe), recalls, integridade do histórico,
+e a **ponta de escrita**: oficina autenticada registra serviço com NF-e e foto do
+odômetro. Fonte de dados: fixtures por padrão, Supabase quando há `.env.local`.
 
-**Não entra (não construir):** blockchain/viem/carteiras, autenticação,
-cadastro/escrita de revisões, deploy. Rodar em localhost basta.
+**Não entra (não construir):** blockchain/viem/carteiras, consulta real à SEFAZ,
+autocadastro de oficina, painel da montadora, pagamento, deploy. Localhost basta.
 
 ## Regras inegociáveis
 
@@ -37,6 +37,9 @@ Detalhes em `.claude/rules/` e nos docs do repo — em resumo:
 4. Regras de negócio são funções puras em `domain/`, sempre com teste.
 5. Sem segredos no repo, sem `dangerouslySetInnerHTML`, sem PII nos fixtures.
 6. Não introduzir blockchain nem novas dependências sem justificativa.
+7. **Escrita:** `workshop_id` vem sempre de `auth.uid()` no servidor, nunca do
+   formulário. Registro é append-only — não criar policy de `UPDATE`/`DELETE` em
+   `service_records`, nem endpoint que edite histórico.
 
 ## Documentação
 

@@ -41,6 +41,20 @@ export type ServiceType =
   | "electrical"
   | "other";
 
+/**
+ * Evidência anexada por uma oficina autenticada. Não prova que o serviço
+ * físico ocorreu — prova que alguém identificável vinculou este km a uma
+ * nota fiscal e a uma foto, e não pode mais desfazer isso (ver SECURITY.md).
+ */
+export interface ServiceEvidence {
+  nfeKey: string;
+  emitterCnpj: string;
+  /** Emitente da nota difere do CNPJ da oficina que registrou. */
+  cnpjMismatch: boolean;
+  /** sha256 da foto do odômetro; a imagem em si não é pública. */
+  photoHash: string;
+}
+
 export interface ServiceRecord {
   id: string;
   /** Data ISO "YYYY-MM-DD" em que o serviço foi DECLARADO como realizado. */
@@ -56,6 +70,8 @@ export interface ServiceRecord {
   attestor: AttestorType;
   serviceType: ServiceType;
   description: string;
+  /** Presente apenas em registros gravados pela ponta de escrita. */
+  evidence?: ServiceEvidence;
 }
 
 export type RecallStatus = "pending" | "resolved";

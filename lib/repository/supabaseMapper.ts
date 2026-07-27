@@ -13,6 +13,10 @@ export interface ServiceRecordRow {
   attestor: string;
   service_type: string;
   description: string | null;
+  nfe_key: string | null;
+  nfe_emitter_cnpj: string | null;
+  nfe_cnpj_mismatch: boolean | null;
+  odometer_photo_hash: string | null;
 }
 
 export interface RecallRow {
@@ -48,6 +52,20 @@ export function toVehicleHistory(row: VehicleRow): unknown {
       attestor: record.attestor,
       serviceType: record.service_type,
       description: record.description ?? "",
+      // Evidência só existe em registro gravado pela ponta de escrita; os
+      // registros históricos (concessionária, vistoria) não têm.
+      ...(record.nfe_key !== null &&
+      record.nfe_emitter_cnpj !== null &&
+      record.odometer_photo_hash !== null
+        ? {
+            evidence: {
+              nfeKey: record.nfe_key,
+              emitterCnpj: record.nfe_emitter_cnpj,
+              cnpjMismatch: record.nfe_cnpj_mismatch === true,
+              photoHash: record.odometer_photo_hash,
+            },
+          }
+        : {}),
     }));
 
   const recalls = row.recalls.map((recall) => ({

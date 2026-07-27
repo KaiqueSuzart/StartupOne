@@ -1,6 +1,54 @@
 # Práticas de segurança
 
-Aplicadas desde a PoC, mesmo sem backend:
+## O que o sistema garante — e o que não garante
+
+A pergunta honesta é: *"e se o dono pagar para a oficina dizer que fez a revisão
+sem ter feito?"*. Nenhum sistema impede uma parte confiável de mentir na entrada —
+nem cartório, nem blockchain. O que se pode fazer é **encarecer a mentira**.
+
+**O Lastro garante:** que este número de quilometragem foi registrado nesta data,
+por esta entidade identificada, vinculado a esta chave de NF-e e a esta foto — e
+que nada disso pode mais ser alterado ou removido, nem pela oficina, nem por nós.
+
+**O Lastro não garante:** que o serviço físico ocorreu, nem que a nota fiscal
+corresponde ao serviço descrito. Essa verificação depende da SEFAZ (seam
+documentado em `ARCHITECTURE.md`) e, no limite, de inspeção física.
+
+Três mecanismos elevam o custo da fraude:
+
+1. **Vínculo com NF-e.** Registrar exige informar a chave de uma nota fiscal com
+   dígito verificador válido. A fraude deixa de ser "digitar um texto" e passa a
+   exigir **emitir nota fiscal falsa** — crime fiscal, com a Receita do outro lado.
+2. **Cruzamento emitente ↔ oficina.** O CNPJ embutido na chave é comparado com o
+   da oficina autenticada. Divergência **não bloqueia** (matriz, filial e rede
+   emitem legitimamente), mas fica gravada e **aparece no relatório do comprador**.
+3. **Km monotônico na escrita.** Um registro com km menor que o último é recusado
+   **antes de existir** — no domínio e, sobretudo, por trigger no Postgres, que
+   vale mesmo para quem chamar a API direto.
+
+## Superfície de escrita (etapa 2)
+
+- **`workshop_id` vem sempre de `auth.uid()` no servidor**, nunca de campo de
+  formulário. A policy de `INSERT` exige `workshop_id = auth.uid()` — o banco
+  recusa gravar em nome de outra oficina mesmo que o código tentasse.
+- **Append-only de verdade:** existem policies de `SELECT` e `INSERT`; **não
+  existe policy de `UPDATE` nem de `DELETE`**. Provado por
+  `scripts/verify-append-only.mjs`, que roda contra o banco real com uma sessão
+  de oficina válida.
+- **Foto do odômetro em bucket privado.** Pode capturar interior do veículo,
+  pessoas ou local. O relatório público mostra apenas o **hash sha256**, que prova
+  que a evidência existe e não foi trocada. O caminho no Storage é o próprio hash
+  (endereçado por conteúdo) e não há policy de `UPDATE`: foto enviada não é
+  substituída.
+- **Upload validado no servidor:** tipo, tamanho (8 MB) e *magic number* do
+  arquivo — o `content-type` declarado pelo cliente não é confiável. O hash é
+  calculado no servidor.
+- **NF-e é dado sensível.** Guarda-se a chave e o CNPJ emitente; o relatório
+  público exibe a chave **mascarada** e o CNPJ do emitente (dado público de
+  empresa), nunca o documento fiscal completo.
+- **Mensagem de login genérica**, para não revelar quais e-mails existem.
+
+## Práticas gerais
 
 - **Sem segredos no repositório.** As credenciais do Supabase ficam em `.env.local`
   (o `.gitignore` cobre `.env*`); `.env.example` documenta as variáveis sem valores reais.

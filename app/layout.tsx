@@ -55,6 +55,12 @@ export default function RootLayout({
               >
                 Como verificamos
               </Link>
+              <Link
+                href="/oficina/registrar"
+                className="text-sm font-medium text-emerald-700 underline-offset-4 transition-colors hover:text-emerald-800 hover:underline"
+              >
+                Sou oficina
+              </Link>
               <span className="hidden rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 sm:inline">
                 Prova de conceito
               </span>

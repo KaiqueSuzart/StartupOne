@@ -24,6 +24,21 @@ export function maskVin(vin: string): string {
   return `•••••••••••••${vin.slice(-4)}`;
 }
 
+export function formatCnpj(cnpj: string): string {
+  return cnpj.replace(
+    /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+    "$1.$2.$3/$4-$5",
+  );
+}
+
+/**
+ * Chave da NF-e mascarada: mostra início e fim para conferência sem publicar
+ * o identificador fiscal completo de terceiros (ver SECURITY.md).
+ */
+export function maskNfeKey(key: string): string {
+  return `${key.slice(0, 6)}…${key.slice(-6)}`;
+}
+
 export const ATTESTOR_LABELS: Record<AttestorType, string> = {
   dealership: "Concessionária",
   authorized_service: "Rede autorizada",

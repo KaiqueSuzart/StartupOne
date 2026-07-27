@@ -49,6 +49,49 @@ credenciais no ambiente e fixtures caso contrário. Na fase on-chain, o
 validando as respostas com os **mesmos** schemas Zod de `lib/schema.ts`) e entrará ali.
 **Nenhum arquivo de `app/`, `components/` ou `domain/` muda.**
 
+## A ponta de escrita (oficina)
+
+A escrita tem a **própria costura**, com a mesma filosofia da leitura:
+
+```
+  Tela da oficina (app/oficina/)
+        ↓
+  ServiceRecordWriter.recordService()   [A COSTURA DE ESCRITA]
+        ├── SupabaseServiceRecordWriter → Postgres + RLS      (AGORA)
+        └── OnChainServiceRecordWriter  → grava na chain      (FUTURO)
+
+  NfeValidator.validate()               [SEAM DA NOTA FISCAL]
+        ├── OfflineNfeValidator → formato + dígito verificador (AGORA)
+        └── SefazNfeValidator   → consulta o webservice real   (FUTURO)
+```
+
+Nenhuma das duas implementações futuras muda a tela: a tela fala com as
+interfaces em [lib/repository/ServiceRecordWriter.ts](lib/repository/ServiceRecordWriter.ts)
+e [lib/nfe/NfeValidator.ts](lib/nfe/NfeValidator.ts). O writer é criado por
+requisição (`createServiceRecordWriter`), porque cada gravação usa a sessão da
+oficina autenticada — diferente da leitura, que é um singleton.
+
+### Fluxo de um registro
+
+```
+formulário → Server Action (app/oficina/registrar/actions.ts)
+  → getAuthenticatedWorkshop()          [identidade vem do servidor]
+  → serviceFormSchema (Zod)             [forma da entrada]
+  → domain/serviceEntry.ts              [regra pura: km, NF-e, CNPJ]
+  → NfeValidator                        [seam]
+  → inspectOdometerPhoto()              [tipo, tamanho, magic number, sha256]
+  → uploadOdometerPhoto()               [bucket privado, caminho = hash]
+  → ServiceRecordWriter.recordService() [A COSTURA]
+      → Postgres: RLS (workshop_id = auth.uid()) + trigger de km monotônico
+```
+
+### Duas identidades por registro
+
+`attestor` é o **tipo** de quem atestou (concessionária, oficina, vistoria) e
+alimenta o badge de procedência. `workshop_id` é a **identidade** de quem gravou,
+e só existe em registros da ponta de escrita. São papéis distintos: fundi-los
+apagaria a procedência dos registros históricos.
+
 ### O banco não é a arquitetura
 
 O Postgres é um detalhe de implementação atrás da interface: o domínio não sabe que ele
