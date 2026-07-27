@@ -59,6 +59,13 @@ escrita fica aberta — e, como o histórico é append-only, registro indevido
 - **Reset administrativo** (`supabase/reset_demo.sql`) devolve a base ao
   estado semeado. Exige credencial de administrador do banco.
 
+- **Limite de escrita nas tabelas públicas** (`supabase/rate_limit.sql`): 10
+  cadastros de interesse por placa/dia e 30 consultas registradas por
+  identificador/dia, mais tetos globais diários. O limite é por chave de
+  negócio, não por pessoa — o projeto não guarda IP nem identificador de
+  visitante e não vai passar a guardar para fazer throttle. Proteção por
+  origem é camada de borda (firewall do provedor), não do banco.
+
 Essa última é a assimetria que vale registrar: enquanto os dados vivem só no
 Postgres, **o dono do banco consegue apagar o que a oficina e a aplicação não
 conseguem**. É exatamente a lacuna que a ancoragem on-chain fecha na próxima

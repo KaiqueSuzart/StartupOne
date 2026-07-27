@@ -94,12 +94,22 @@ dependência da interface. Para provisionar:
    [`supabase/workshop.sql`](supabase/workshop.sql) (ponta de escrita) →
    [`supabase/seed_workshops.sql`](supabase/seed_workshops.sql) (oficinas de teste) →
    [`supabase/interest.sql`](supabase/interest.sql) (captura de interesse) →
-   [`supabase/telemetry.sql`](supabase/telemetry.sql) (registro de consultas).
+   [`supabase/telemetry.sql`](supabase/telemetry.sql) (registro de consultas) →
+   [`supabase/rate_limit.sql`](supabase/rate_limit.sql) (limites de escrita pública).
 2. Copie `.env.example` para `.env.local` e preencha `SUPABASE_URL` e
    `SUPABASE_ANON_KEY`.
 
-A aplicação usa **somente a chave anon**, e o Row Level Security libera apenas `SELECT`:
-nenhuma escrita é possível pela aplicação. A `service_role` não existe no projeto.
+A aplicação usa **somente a chave anon** — a `service_role` não existe no projeto. O Row
+Level Security define exatamente o que essa chave pode fazer:
+
+| Tabela | Leitura | Escrita |
+| --- | --- | --- |
+| `vehicles`, `service_records`, `recalls`, `workshops` | pública | `INSERT` só de oficina autenticada, no próprio nome |
+| `vehicle_interest` | **nenhuma** (e-mail é dado pessoal) | `INSERT` aberto, com cota diária |
+| `search_log` | **nenhuma** | `INSERT` aberto, com cota diária |
+
+Em nenhuma tabela existe policy de `UPDATE` ou `DELETE` — o histórico é append-only até
+para quem tem credencial de oficina.
 
 ## Publicar (Vercel)
 
@@ -130,6 +140,10 @@ defesas já embutidas:
 
 - **Cota de 20 registros por oficina por dia**, aplicada por trigger no
   Postgres (`supabase/workshop.sql`).
+- **Cotas nas tabelas públicas** (`supabase/rate_limit.sql`): 10 cadastros de
+  interesse por placa/dia e 30 consultas registradas por identificador/dia,
+  com tetos globais. O limite é por chave de negócio, não por visitante — o
+  projeto não guarda IP.
 - **Reset administrativo**: `supabase/reset_demo.sql` apaga os registros
   gravados por oficinas e devolve a base ao estado semeado. Só roda com
   credencial de administrador — a aplicação não consegue.

@@ -50,12 +50,21 @@ export async function registerInterestAction(
 
   // Violação de unicidade significa que já estava cadastrado — para quem
   // deixou o e-mail, o resultado é o mesmo.
-  if (error !== null && error.code !== "23505") {
+  if (error === null || error.code === "23505") {
+    return { status: "saved", message: null };
+  }
+
+  // Cota diária atingida (trigger em supabase/rate_limit.sql).
+  if (error.code === "23514" || error.code === "P0001") {
     return {
       status: "error",
-      message: "Não foi possível registrar agora. Tente de novo em instantes.",
+      message:
+        "Muitos cadastros para esta placa hoje. Tente novamente amanhã.",
     };
   }
 
-  return { status: "saved", message: null };
+  return {
+    status: "error",
+    message: "Não foi possível registrar agora. Tente de novo em instantes.",
+  };
 }
