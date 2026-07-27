@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   compareOdometerReading,
+  consolidateReadings,
+  extractOdometerCandidates,
   extractOdometerKm,
 } from "@/domain/odometerReading";
 
@@ -20,18 +22,65 @@ describe("extractOdometerKm", () => {
   });
 
   it("escolhe o maior número plausível quando há ruído no painel", () => {
-    // Trip, temperatura e hora costumam aparecer junto com o odômetro.
     expect(extractOdometerKm("A 245.7  22C  14:35  058342")).toBe(58342);
   });
 
-  it("descarta valores fora da faixa plausível", () => {
-    expect(extractOdometerKm("12 45 99")).toBeNull();
+  it("descarta marcas de velocímetro e o 'x 1000' do conta-giros", () => {
+    // Medido em painel real: é exatamente o que o OCR lê quando NÃO enxerga
+    // o odômetro. Aceitar isso acusaria falsamente uma oficina honesta.
+    expect(extractOdometerKm("120 140 200")).toBeNull();
+    expect(extractOdometerKm("x 1000")).toBeNull();
+    expect(extractOdometerKm("ODO 34 F 20 40 120")).toBeNull();
+  });
+
+  it("descarta valores acima do plausível", () => {
     expect(extractOdometerKm("99999999")).toBeNull();
   });
 
   it("devolve null quando não há dígitos", () => {
     expect(extractOdometerKm("")).toBeNull();
     expect(extractOdometerKm("sem numero")).toBeNull();
+  });
+});
+
+describe("extractOdometerCandidates", () => {
+  it("devolve todas as leituras plausíveis, não só a maior", () => {
+    expect(extractOdometerCandidates("58342 e 120450")).toEqual([58342, 120450]);
+  });
+});
+
+describe("consolidateReadings", () => {
+  it("devolve null quando nenhuma versão leu nada", () => {
+    expect(consolidateReadings([[], [], []])).toBeNull();
+  });
+
+  it("vence o valor em que mais versões concordam", () => {
+    // 58342 aparece em três versões; 99999 em uma só.
+    const decision = consolidateReadings([
+      [58342],
+      [58342, 99999],
+      [58342],
+      [],
+    ]);
+    expect(decision).toBe(58342);
+  });
+
+  it("empate desempata pelo maior, que é o odômetro", () => {
+    expect(consolidateReadings([[58342], [120450]])).toBe(120450);
+  });
+
+  it("aceita leitura de uma única versão quando é a única que enxergou", () => {
+    // Caso medido: só a imagem binarizada lê o painel digital.
+    expect(consolidateReadings([[], [], [], [300250]])).toBe(300250);
+  });
+
+  it("uma versão não vota duas vezes no mesmo valor", () => {
+    const decision = consolidateReadings([
+      [58342, 58342, 58342],
+      [120450],
+      [120450],
+    ]);
+    expect(decision).toBe(120450);
   });
 });
 
@@ -52,12 +101,10 @@ describe("compareOdometerReading", () => {
   });
 
   it("aceita diferença dentro de 1%", () => {
-    // 100.000 km → tolerância de 1.000 km.
     expect(compareOdometerReading(100000, 100800).match).toBe("match");
   });
 
   it("usa piso absoluto em quilometragem baixa", () => {
-    // 1% de 1.000 seria 10 km; o piso de 50 evita falso alarme.
     expect(compareOdometerReading(1000, 1040).match).toBe("match");
     expect(compareOdometerReading(1000, 1200).match).toBe("mismatch");
   });

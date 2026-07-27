@@ -12,6 +12,7 @@
  * promete — sem isso, é chute.
  */
 import { readdirSync, readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join, extname, basename } from "node:path";
 import { createWorker } from "tesseract.js";
 import sharp from "sharp";
@@ -48,13 +49,17 @@ async function prepareVariants(bytes) {
 }
 
 /** Espelha domain/odometerReading.ts. */
-function extractOdometerKm(text) {
-  const candidates = text.replace(/(\d)[.,](?=\d)/g, "$1").match(/\d+/g);
-  if (candidates === null) return null;
-  const plausible = candidates
-    .map(Number)
-    .filter((km) => km >= 100 && km <= 2_000_000);
-  return plausible.length === 0 ? null : Math.max(...plausible);
+function extractCandidates(text) {
+  const m = text.replace(/(\d)[.,](?=\d)/g, "$1").match(/\d+/g);
+  if (m === null) return [];
+  return m.map(Number).filter((km) => km >= 10_000 && km <= 2_000_000);
+}
+
+function consolidate(readings) {
+  const votes = new Map();
+  for (const c of readings) for (const km of new Set(c)) votes.set(km, (votes.get(km) ?? 0) + 1);
+  if (votes.size === 0) return null;
+  return [...votes.entries()].sort((a, b) => b[1] - a[1] || b[0] - a[0])[0][0];
 }
 
 const files = readdirSync(dir).filter((f) =>
@@ -67,6 +72,8 @@ if (files.length === 0) {
 
 const worker = await createWorker("eng", 1, {
   langPath: join(process.cwd(), "tessdata"),
+  // Sem isto o tesseract deixa uma cópia do modelo na raiz do projeto.
+  cachePath: tmpdir(),
   gzip: false,
 });
 await worker.setParameters({ tessedit_char_whitelist: "0123456789.," });
@@ -79,17 +86,16 @@ for (const file of files) {
   const bytes = readFileSync(join(dir, file));
   const started = Date.now();
 
-  let read = null;
+  const perVariant = [];
   let usedVariant = null;
   for (const variant of await prepareVariants(bytes)) {
     const { data } = await worker.recognize(variant.bytes);
-    const km = extractOdometerKm(data.text);
-    if (km !== null) {
-      read = km;
-      usedVariant = variant.name;
-      break;
-    }
+    const candidates = extractCandidates(data.text);
+    perVariant.push(candidates);
+    if (usedVariant === null && candidates.length > 0) usedVariant = variant.name;
   }
+  const read = consolidate(perVariant);
+  if (read === null) usedVariant = null;
 
   const ms = Date.now() - started;
   const ok = Number.isFinite(expected) && read === expected;

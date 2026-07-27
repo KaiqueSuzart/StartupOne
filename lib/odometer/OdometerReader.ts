@@ -1,4 +1,7 @@
-import { extractOdometerKm } from "@/domain/odometerReading";
+import {
+  consolidateReadings,
+  extractOdometerCandidates,
+} from "@/domain/odometerReading";
 import { prepareVariants, type VariantName } from "./preprocess";
 
 /**
@@ -67,15 +70,25 @@ export class TesseractOdometerReader implements OdometerReader {
 
     try {
       await worker.setParameters({ tessedit_char_whitelist: "0123456789.," });
-      // Um worker só para todas as variantes: a inicialização é o que custa.
+
+      // Roda TODAS as variantes antes de decidir. Parar na primeira que
+      // devolvesse algum número fazia o leitor aceitar lixo da versão crua
+      // (marca de velocímetro) e nunca chegar na binarizada, que costuma ser
+      // a única a enxergar o odômetro.
+      const perVariant: number[][] = [];
+      let winner: VariantName | null = null;
+
       for (const variant of variants) {
         const { data } = await worker.recognize(variant.bytes);
-        const km = extractOdometerKm(data.text);
-        if (km !== null) {
-          return { km, variant: variant.name };
+        const candidates = extractOdometerCandidates(data.text);
+        perVariant.push(candidates);
+        if (winner === null && candidates.length > 0) {
+          winner = variant.name;
         }
       }
-      return { km: null, variant: null };
+
+      const km = consolidateReadings(perVariant);
+      return { km, variant: km === null ? null : winner };
     } finally {
       await worker.terminate();
     }

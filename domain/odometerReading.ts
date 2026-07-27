@@ -50,25 +50,59 @@ export function compareOdometerReading(
 }
 
 /**
- * Extrai a quilometragem do texto devolvido pelo OCR. Painel costuma ter
- * ruído em volta (trip, temperatura, hora), então vale a maior sequência de
- * dígitos plausível — odômetro é o número mais longo do painel.
+ * Piso deliberadamente alto. Medido em painel real: quando o OCR não enxerga
+ * o odômetro, ele ainda lê as marcas do velocímetro (120, 140, 200) e o
+ * "x 1000" do conta-giros. Aceitar esses números faria o sistema acusar
+ * falsamente uma oficina honesta — erro muito pior que dizer "não consegui
+ * ler". Veículo com menos de 10.000 km fica sem conferência de foto, e tudo
+ * bem: ele não é o alvo da fraude de odômetro.
  */
-export function extractOdometerKm(text: string): number | null {
+export const MIN_READABLE_KM = 10_000;
+const MAX_PLAUSIBLE_KM = 2_000_000;
+
+/**
+ * Extrai as quilometragens candidatas do texto devolvido pelo OCR. Devolve
+ * TODAS as plausíveis, não uma só: quem decide é o leitor, que cruza o
+ * resultado de várias versões da mesma imagem.
+ */
+export function extractOdometerCandidates(text: string): number[] {
   // Ponto e vírgula ENTRE dígitos são separador de milhar e somem; espaço é
   // fronteira e permanece, senão "245.7 22C 058342" viraria um número só.
-  const candidates = text.replace(/(\d)[.,](?=\d)/g, "$1").match(/\d+/g);
-
-  if (candidates === null) {
-    return null;
+  const matches = text.replace(/(\d)[.,](?=\d)/g, "$1").match(/\d+/g);
+  if (matches === null) {
+    return [];
   }
 
-  const plausible = candidates
+  return matches
     .map(Number)
-    .filter((km) => km >= 100 && km <= 2_000_000);
+    .filter((km) => km >= MIN_READABLE_KM && km <= MAX_PLAUSIBLE_KM);
+}
 
-  if (plausible.length === 0) {
+export function extractOdometerKm(text: string): number | null {
+  const candidates = extractOdometerCandidates(text);
+  return candidates.length === 0 ? null : Math.max(...candidates);
+}
+
+/**
+ * Consolida as leituras de várias versões da mesma imagem. Vence o valor que
+ * mais versões concordam; empate desempata pelo maior, que é o odômetro.
+ */
+export function consolidateReadings(
+  readings: readonly number[][],
+): number | null {
+  const votes = new Map<number, number>();
+  for (const candidates of readings) {
+    // Uma versão vota uma vez por valor, mesmo que o repita.
+    for (const km of new Set(candidates)) {
+      votes.set(km, (votes.get(km) ?? 0) + 1);
+    }
+  }
+
+  if (votes.size === 0) {
     return null;
   }
-  return Math.max(...plausible);
+
+  return [...votes.entries()].sort(
+    ([kmA, votesA], [kmB, votesB]) => votesB - votesA || kmB - kmA,
+  )[0][0];
 }
