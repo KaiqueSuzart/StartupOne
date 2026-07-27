@@ -9,6 +9,28 @@
    identidade de confiança consistente em vez de suporte a dark mode. */
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background: #f6f7f9;
+}
+
+@layer components {
+  /* Superfície padrão do relatório: um cartão de documento. */
+  .card {
+    border-radius: 1rem;
+    border: 1px solid rgb(226 232 240);
+    background: #fff;
+    box-shadow:
+      0 1px 2px rgb(15 23 42 / 0.04),
+      0 4px 12px -4px rgb(15 23 42 / 0.06);
+  }
+
+  /* Rótulo de seção — usado no topo de cada bloco do relatório. */
+  .section-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(100 116 139);
+  }
 }
 
 /* Impressão/"salvar PDF": o relatório é o documento que o comprador leva
@@ -26,5 +48,10 @@ body {
   main {
     max-width: none;
     padding: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    break-inside: avoid;
   }
 }

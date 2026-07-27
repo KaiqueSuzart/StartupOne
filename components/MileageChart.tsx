@@ -1,86 +1,124 @@
 import type { ServiceRecord } from "@/domain/types";
 import { formatDateBR, formatKm } from "@/lib/format";
+import { buildChartModel } from "@/lib/chart";
 
 interface MileageChartProps {
   records: ServiceRecord[];
   flaggedIds: ReadonlySet<string>;
 }
 
-const WIDTH = 600;
-const HEIGHT = 180;
-const PADDING = { top: 12, right: 12, bottom: 12, left: 12 };
-
 /**
  * Gráfico km × tempo em SVG puro (sem biblioteca): numa fraude de odômetro a
  * linha despenca, tornando a inconsistência visível antes de qualquer texto.
+ * O ponto suspeito é marcado por FORMA (losango) e rótulo direto além da cor —
+ * vermelho e verde ficam a ΔE 6.6 sob deuteranopia, insuficiente sozinho.
  */
 export function MileageChart({ records, flaggedIds }: MileageChartProps) {
   if (records.length < 2) {
     return null;
   }
 
-  const times = records.map((r) => Date.parse(r.date));
-  const kms = records.map((r) => r.odometerKm);
-  const minTime = Math.min(...times);
-  const maxTime = Math.max(...times);
-  const maxKm = Math.max(...kms);
-  const spanTime = Math.max(maxTime - minTime, 1);
-  const spanKm = Math.max(maxKm, 1);
-
-  const innerWidth = WIDTH - PADDING.left - PADDING.right;
-  const innerHeight = HEIGHT - PADDING.top - PADDING.bottom;
-
-  const points = records.map((record, i) => ({
-    record,
-    x: PADDING.left + ((times[i] - minTime) / spanTime) * innerWidth,
-    y: PADDING.top + innerHeight - (kms[i] / spanKm) * innerHeight,
-  }));
-
-  const path = points.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+  const model = buildChartModel(records, flaggedIds);
+  const { width, height, points, segments, yTicks, plot } = model;
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-        Quilometragem ao longo do tempo
-      </h2>
+    <section className="card p-5">
+      <h2 className="section-title">Quilometragem ao longo do tempo</h2>
       <svg
-        viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-        className="mt-3 h-auto w-full"
+        viewBox={`0 0 ${width} ${height}`}
+        className="mt-4 h-auto w-full"
         role="img"
         aria-label={`Evolução da quilometragem de ${formatKm(
-          kms[0],
-        )} em ${formatDateBR(records[0].date)} a ${formatKm(
-          kms[kms.length - 1],
-        )} em ${formatDateBR(records[records.length - 1].date)}`}
+          points[0].km,
+        )} em ${formatDateBR(points[0].date)} a ${formatKm(
+          points[points.length - 1].km,
+        )} em ${formatDateBR(points[points.length - 1].date)}`}
       >
-        <polyline
-          points={path}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          className="text-slate-400"
-        />
-        {points.map(({ record, x, y }) => (
-          <circle
-            key={record.id}
-            cx={x}
-            cy={y}
-            r={flaggedIds.has(record.id) ? 6 : 4}
-            className={
-              flaggedIds.has(record.id)
-                ? "fill-red-600"
-                : "fill-emerald-600"
-            }
-          >
-            <title>
-              {`${formatDateBR(record.date)} — ${formatKm(record.odometerKm)}`}
-            </title>
-          </circle>
+        {yTicks.map((tick) => (
+          <g key={tick.km}>
+            <line
+              x1={plot.left}
+              x2={width - plot.right}
+              y1={tick.y}
+              y2={tick.y}
+              stroke="#e2e8f0"
+              strokeWidth={1}
+            />
+            <text
+              x={plot.left - 8}
+              y={tick.y + 4}
+              textAnchor="end"
+              className="fill-slate-400 text-[11px] [font-variant-numeric:tabular-nums]"
+            >
+              {tick.label}
+            </text>
+          </g>
         ))}
+
+        {segments.map((segment) => (
+          <line
+            key={segment.key}
+            x1={segment.x1}
+            y1={segment.y1}
+            x2={segment.x2}
+            y2={segment.y2}
+            stroke={segment.flagged ? "#d03b3b" : "#059669"}
+            strokeWidth={2}
+            strokeLinecap="round"
+          />
+        ))}
+
+        {points.map((point) =>
+          point.flagged ? (
+            <g key={point.id}>
+              {/* Losango: forma distinta carrega o alerta junto com a cor. */}
+              <rect
+                x={point.x - 6}
+                y={point.y - 6}
+                width={12}
+                height={12}
+                transform={`rotate(45 ${point.x} ${point.y})`}
+                fill="#d03b3b"
+                stroke="#fff"
+                strokeWidth={2}
+              />
+              <text
+                x={point.x}
+                y={point.y + 26}
+                textAnchor="middle"
+                className="fill-red-700 text-[11px] font-semibold"
+              >
+                {point.deltaLabel}
+              </text>
+              <title>{`${formatDateBR(point.date)} — ${formatKm(point.km)}`}</title>
+            </g>
+          ) : (
+            <circle key={point.id} cx={point.x} cy={point.y} r={4.5} fill="#059669">
+              <title>{`${formatDateBR(point.date)} — ${formatKm(point.km)}`}</title>
+            </circle>
+          ),
+        )}
+
+        <text
+          x={plot.left}
+          y={height - 6}
+          className="fill-slate-400 text-[11px]"
+        >
+          {points[0].year}
+        </text>
+        <text
+          x={width - plot.right}
+          y={height - 6}
+          textAnchor="end"
+          className="fill-slate-400 text-[11px]"
+        >
+          {points[points.length - 1].year}
+        </text>
       </svg>
       <p className="mt-2 text-xs text-slate-500">
-        Cada ponto é um registro do histórico. Uma queda na linha indica
-        quilometragem menor que a já registrada.
+        Cada ponto é um registro do histórico. A linha só pode subir: uma queda
+        significa quilometragem menor que a já registrada. Os valores exatos
+        estão na linha do tempo abaixo.
       </p>
     </section>
   );

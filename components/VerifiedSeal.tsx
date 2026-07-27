@@ -11,9 +11,13 @@ export function VerifiedSeal({ label = "Registro preservado" }: VerifiedSealProp
   return (
     <span
       title="O conteúdo deste registro não foi alterado nem removido desde o momento em que entrou no histórico."
-      className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 text-xs font-medium text-white"
+      className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600"
     >
-      <svg aria-hidden="true" viewBox="0 0 24 24" className="h-3.5 w-3.5 fill-current">
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        className="h-3.5 w-3.5 fill-slate-500"
+      >
         <path d="M17 9V7a5 5 0 0 0-10 0v2H5v12h14V9h-2Zm-8-2a3 3 0 0 1 6 0v2H9V7Zm4 9.7V19h-2v-2.3a2 2 0 1 1 2 0Z" />
       </svg>
       {label}

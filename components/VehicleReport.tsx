@@ -7,17 +7,20 @@ import { RecallNotices } from "./RecallNotices";
 import { ReportActions } from "./ReportActions";
 import { Timeline } from "./Timeline";
 import { VehicleSummaryCard } from "./VehicleSummaryCard";
+import { VerdictBanner } from "./VerdictBanner";
 
 type VehicleReportProps = VehicleReportData;
 
 /**
- * Composição do relatório, do achado mais grave ao contexto: fraude de km →
- * recall aberto → observações do histórico → gráfico → linha do tempo.
+ * Composição do relatório: veredito primeiro (a resposta), depois a
+ * identificação do veículo, os achados em ordem de gravidade e, por fim, a
+ * evidência — gráfico e linha do tempo.
  */
 export function VehicleReport({
   history,
   anomalies,
   integrity,
+  verdict,
   mileage,
   ledger,
 }: VehicleReportProps) {
@@ -29,14 +32,11 @@ export function VehicleReport({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
+      <VerdictBanner verdict={verdict} />
       <VehicleSummaryCard
         vehicle={history.vehicle}
         recordCount={history.records.length}
-        anomalyCount={anomalies.length}
-        pendingRecallCount={
-          history.recalls.filter((r) => r.status === "pending").length
-        }
         mileage={mileage}
       />
       {anomalies.length > 0 && <AnomalyAlert anomalies={anomalies} />}

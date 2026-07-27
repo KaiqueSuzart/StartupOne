@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { PlateBadge } from "./PlateBadge";
+import { SearchForm } from "./SearchForm";
 
 interface EmptyStateProps {
   /** Identificador já normalizado que não retornou resultado. */
@@ -7,32 +9,40 @@ interface EmptyStateProps {
 
 export function EmptyState({ query }: EmptyStateProps) {
   return (
-    <section className="mx-auto max-w-lg rounded-xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 24 24"
-        className="mx-auto h-10 w-10 fill-slate-300"
-      >
-        <path d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5 1.5-1.5-5-5Zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Z" />
-      </svg>
-      <h1 className="mt-4 text-xl font-bold text-slate-900">
-        Nenhum veículo encontrado
-      </h1>
-      <p className="mt-2 text-sm text-slate-600">
-        Não há histórico registrado para{" "}
-        <span className="font-mono font-semibold">{query}</span> nesta base de
-        demonstração.
-      </p>
-      <p className="mt-1 text-xs text-slate-400">
-        A PoC consulta apenas veículos simulados — experimente uma das placas
-        de demonstração.
-      </p>
+    <div className="mx-auto flex max-w-lg flex-col items-center gap-6 text-center">
+      <div className="card w-full p-8">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-slate-100">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="h-7 w-7 fill-slate-400"
+          >
+            <path d="M15.5 14h-.8l-.3-.3a6.5 6.5 0 1 0-.7.7l.3.3v.8l5 5 1.5-1.5-5-5Zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9Z" />
+          </svg>
+        </span>
+        <h1 className="mt-4 text-xl font-bold text-slate-900">
+          Nenhum histórico encontrado
+        </h1>
+        <div className="mt-3 flex justify-center">
+          <PlateBadge plate={query} />
+        </div>
+        <p className="mt-4 text-sm text-slate-600">
+          A placa tem formato válido, mas não há nenhum registro para ela nesta
+          base de demonstração.
+        </p>
+        <p className="mt-2 text-xs text-slate-500">
+          Histórico vazio não significa carro sem problemas — significa que
+          ninguém registrou nada. A cobertura cresce conforme oficinas e
+          concessionárias aderem.
+        </p>
+      </div>
+      <SearchForm />
       <Link
         href="/"
-        className="mt-6 inline-block rounded-lg bg-slate-950 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-slate-800"
+        className="text-sm font-medium text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline"
       >
-        Nova consulta
+        ← Ver as placas de demonstração
       </Link>
-    </section>
+    </div>
   );
 }

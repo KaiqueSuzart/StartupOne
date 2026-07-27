@@ -6,6 +6,7 @@ import {
   formatKm,
   SERVICE_TYPE_LABELS,
 } from "@/lib/format";
+import { ServiceIcon } from "./ServiceIcon";
 import { VerifiedSeal } from "./VerifiedSeal";
 
 interface TimelineItemProps {
@@ -34,32 +35,49 @@ export function TimelineItem({
     <li className="relative">
       <span
         aria-hidden="true"
-        className={`absolute -left-[31px] top-6 h-3 w-3 rounded-full ring-4 ring-slate-50 ${
-          anomalous ? "bg-red-500" : "bg-emerald-500"
-        }`}
-      />
-      <article
-        className={`rounded-xl border bg-white p-5 shadow-sm ${
-          anomalous ? "border-red-300 ring-2 ring-red-100" : "border-slate-200"
+        className={`absolute -left-[38px] top-5 flex h-7 w-7 items-center justify-center rounded-full ring-4 ring-[#f6f7f9] ${
+          anomalous ? "bg-red-600" : "bg-slate-900"
         }`}
       >
-        <header className="flex flex-wrap items-center gap-x-3 gap-y-2">
-          <time dateTime={record.date} className="text-sm font-medium text-slate-500">
+        <ServiceIcon type={record.serviceType} className="h-4 w-4 fill-white" />
+      </span>
+      <article
+        className={`card p-5 ${anomalous ? "border-red-300 ring-2 ring-red-100" : ""}`}
+      >
+        <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <h3 className="font-semibold text-slate-900">
+            {SERVICE_TYPE_LABELS[record.serviceType]}
+          </h3>
+          <time dateTime={record.date} className="text-sm text-slate-500">
             {formatDateBR(record.date)}
           </time>
-          <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
-            {SERVICE_TYPE_LABELS[record.serviceType]}
-          </span>
           <span
-            className={`ml-auto font-mono text-sm font-semibold ${
+            className={`ml-auto font-mono text-base font-bold [font-variant-numeric:tabular-nums] ${
               anomalous ? "text-red-700" : "text-slate-900"
             }`}
           >
             {formatKm(record.odometerKm)}
           </span>
         </header>
-        <p className="mt-2 text-sm text-slate-700">{record.description}</p>
-        <footer className="mt-3 flex flex-wrap items-center gap-2">
+
+        {(anomalous || backdated) && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {anomalous && (
+              <span className="rounded-full bg-red-600 px-3 py-1 text-xs font-semibold text-white">
+                Quilometragem inconsistente
+              </span>
+            )}
+            {backdated && (
+              <span className="rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold text-white">
+                Registro retroativo
+              </span>
+            )}
+          </div>
+        )}
+
+        <p className="mt-2 text-sm text-slate-600">{record.description}</p>
+
+        <footer className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
           <span
             className={`rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${
               trusted
@@ -70,29 +88,23 @@ export function TimelineItem({
             {ATTESTOR_LABELS[record.attestor]}
           </span>
           <span className="text-xs text-slate-500">{record.workshop}</span>
-          <span className="ml-auto inline-flex items-center gap-2">
-            {anomalous && (
-              <span className="rounded-full bg-red-600 px-3 py-1 text-xs font-medium text-white">
-                Km inconsistente
-              </span>
-            )}
-            {backdated && (
-              <span className="rounded-full bg-amber-500 px-3 py-1 text-xs font-medium text-white">
-                Registro retroativo
-              </span>
-            )}
+          <span className="ml-auto">
             <VerifiedSeal />
           </span>
         </footer>
+
         {ledgerEntry !== undefined && (
-          <p className="mt-3 border-t border-slate-100 pt-2 font-mono text-[11px] text-slate-400">
-            <span className="text-slate-500">registrado em</span>{" "}
-            {formatDateBR(record.recordedAt)}
-            <span className="text-slate-500"> · elo</span> #{ledgerEntry.index + 1}
-            <span className="text-slate-500"> · hash</span> {ledgerEntry.hash}
-            <span className="text-slate-500"> · anterior</span>{" "}
-            {ledgerEntry.previousHash}
-          </p>
+          <details className="mt-2 print:hidden">
+            <summary className="cursor-pointer text-xs text-slate-400 transition-colors hover:text-slate-600">
+              Registrado em {formatDateBR(record.recordedAt)} · elo #
+              {ledgerEntry.index + 1} da cadeia
+            </summary>
+            <p className="mt-1 break-all font-mono text-[11px] leading-relaxed text-slate-400">
+              hash {ledgerEntry.hash}
+              <br />
+              anterior {ledgerEntry.previousHash}
+            </p>
+          </details>
         )}
       </article>
     </li>

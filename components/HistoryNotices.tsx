@@ -33,15 +33,13 @@ export function HistoryNotices({ issues }: HistoryNoticesProps) {
   }
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-5">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-        Observações sobre o histórico
-      </h2>
-      <ul className="mt-3 space-y-2">
+    <section className="card p-5">
+      <h2 className="section-title">Observações sobre o histórico</h2>
+      <ul className="mt-3 space-y-2.5">
         {issues.map((issue, index) => (
           <li
             key={`${issue.type}-${issue.recordId}-${index}`}
-            className="flex items-start gap-2 text-sm"
+            className="flex items-start gap-3 text-sm"
           >
             <span
               className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -56,7 +54,7 @@ export function HistoryNotices({ issues }: HistoryNoticesProps) {
           </li>
         ))}
       </ul>
-      <p className="mt-3 text-xs text-slate-500">
+      <p className="mt-4 border-t border-slate-100 pt-3 text-xs text-slate-500">
         Lacunas não indicam fraude: significam que não há informação naquele
         período. Ausência de registro não é atestado de bom estado.
       </p>

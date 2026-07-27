@@ -30,6 +30,7 @@ export default async function ConsultaPage({
           history={result.history}
           anomalies={result.anomalies}
           integrity={result.integrity}
+          verdict={result.verdict}
           mileage={result.mileage}
           ledger={result.ledger}
         />

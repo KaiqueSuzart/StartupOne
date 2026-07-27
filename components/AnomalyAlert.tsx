@@ -23,42 +23,47 @@ function describeAnomaly(flag: AnomalyFlag): string {
 
 export function AnomalyAlert({ anomalies }: AnomalyAlertProps) {
   return (
-    <section
-      role="alert"
-      className="rounded-xl border-2 border-red-300 bg-red-50 p-5"
-    >
-      <div className="flex items-center gap-2">
+    <section className="card overflow-hidden border-red-200">
+      <div className="flex items-center gap-3 border-b border-red-100 bg-red-50 px-5 py-3">
         <svg
           aria-hidden="true"
           viewBox="0 0 24 24"
-          className="h-6 w-6 shrink-0 fill-red-600"
+          className="h-5 w-5 shrink-0 fill-red-600"
         >
           <path d="M12 2 1 21h22L12 2Zm1 14h-2v2h2v-2Zm0-7h-2v5h2V9Z" />
         </svg>
-        <h2 className="text-lg font-bold text-red-800">
-          Inconsistência de quilometragem detectada
+        <h2 className="font-bold text-red-900">
+          Inconsistência de quilometragem
         </h2>
       </div>
-      <ul className="mt-3 space-y-2 pl-8 text-sm text-red-900">
-        {anomalies.map((flag) => (
-          <li key={`${flag.previousRecordId}-${flag.recordId}`} className="list-disc">
-            {describeAnomaly(flag)}
-          </li>
-        ))}
-      </ul>
-      <p className="mt-3 pl-8 text-sm font-medium text-red-800">
-        Este padrão é um indício comum de adulteração de odômetro. Avalie o
-        veículo com cautela antes de qualquer negociação.
-      </p>
-      {/* A tese do produto dita em uma frase, exatamente onde ela se prova. */}
-      <p className="mt-3 rounded-lg bg-red-100 px-4 py-3 text-sm text-red-900">
-        <strong className="font-semibold">
-          O registro anterior não pôde ser apagado.
-        </strong>{" "}
-        Num histórico comum, bastaria remover a linha inconveniente. Aqui o
-        registro de {formatKm(anomalies[0].previousKm)} continua no histórico —
-        e é ele que expõe a inconsistência.
-      </p>
+      <div className="p-5">
+        <ul className="space-y-2 text-sm text-slate-700">
+          {anomalies.map((flag) => (
+            <li
+              key={`${flag.previousRecordId}-${flag.recordId}`}
+              className="flex gap-2"
+            >
+              <span aria-hidden="true" className="text-red-500">
+                •
+              </span>
+              {describeAnomaly(flag)}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-4 text-sm text-slate-700">
+          Este padrão é um indício comum de adulteração de odômetro. Avalie o
+          veículo com cautela antes de qualquer negociação.
+        </p>
+        {/* A tese do produto dita em uma frase, exatamente onde ela se prova. */}
+        <p className="mt-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-900">
+          <strong className="font-semibold">
+            O registro anterior não pôde ser apagado.
+          </strong>{" "}
+          Num histórico comum, bastaria remover a linha inconveniente. Aqui o
+          registro de {formatKm(anomalies[0].previousKm)} continua no histórico
+          — e é ele que expõe a inconsistência.
+        </p>
+      </div>
     </section>
   );
 }
