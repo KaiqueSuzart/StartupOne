@@ -32,6 +32,7 @@ const serviceEvidenceSchema = z.object({
   emitterCnpj: z.string().regex(/^\d{14}$/),
   cnpjMismatch: z.boolean(),
   photoHash: z.string().regex(/^[a-f0-9]{64}$/),
+  photoReading: z.enum(["match", "mismatch", "unreadable"]).optional(),
 });
 
 export const serviceRecordSchema = z.object({

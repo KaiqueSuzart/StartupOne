@@ -1,4 +1,5 @@
-import { classifyIdentifier } from "@/domain/plate";
+import { cache } from "react";
+import { classifyIdentifier, normalizeIdentifier } from "@/domain/plate";
 import { detectOdometerAnomalies, type AnomalyFlag } from "@/domain/anomaly";
 import { detectIntegrityIssues, type IntegrityIssue } from "@/domain/integrity";
 import { buildLedgerChain, type LedgerEntry } from "@/domain/ledger";
@@ -12,6 +13,7 @@ import { summarizeOwnership, type OwnershipSummary } from "@/domain/ownership";
 import { summarizeVerdict, type VerdictSummary } from "@/domain/verdict";
 import type { VehicleHistory } from "@/domain/types";
 import { vehicleRepository } from "@/lib/repository";
+import { logSearch } from "@/lib/telemetry";
 
 /**
  * Serviço de aplicação: é AQUI que domínio e camada de dados se compõem
@@ -38,12 +40,22 @@ export type VehicleReportResult =
   | { status: "not_found"; query: string }
   | ({ status: "found" } & VehicleReport);
 
-export async function lookupVehicleReport(
-  rawQuery: string,
-): Promise<VehicleReportResult> {
+/**
+ * `cache` deduplica a consulta dentro da mesma requisição: a página e o
+ * generateMetadata pedem o mesmo relatório e o banco é lido uma vez só — o
+ * que também garante um único registro de telemetria por consulta.
+ */
+export const lookupVehicleReport = cache(
+  async (rawQuery: string): Promise<VehicleReportResult> => {
+    return lookup(rawQuery);
+  },
+);
+
+async function lookup(rawQuery: string): Promise<VehicleReportResult> {
   const { kind, value } = classifyIdentifier(rawQuery);
 
   if (kind === "invalid") {
+    logSearch(normalizeIdentifier(rawQuery), kind, false);
     return { status: "invalid_query", query: rawQuery.trim() };
   }
 
@@ -51,6 +63,8 @@ export async function lookupVehicleReport(
     kind === "vin"
       ? await vehicleRepository.getByVin(value)
       : await vehicleRepository.getByPlate(value);
+
+  logSearch(value, kind, history !== null);
 
   if (history === null) {
     return { status: "not_found", query: value };

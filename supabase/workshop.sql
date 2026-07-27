@@ -32,7 +32,14 @@ alter table public.service_records
   -- filial e rede emitem legitimamente), mas fica registrado e visível.
   add column if not exists nfe_cnpj_mismatch boolean not null default false,
   add column if not exists odometer_photo_path text,
-  add column if not exists odometer_photo_hash text;
+  add column if not exists odometer_photo_hash text,
+  -- Km lido na foto pelo OCR e o resultado da comparação com o digitado.
+  -- Ambos nulos quando a leitura não rodou; 'unreadable' quando rodou e não
+  -- deu para ler. A distinção importa: "não conferimos" ≠ "não bateu".
+  add column if not exists odometer_ocr_km integer,
+  add column if not exists odometer_ocr_match text
+    check (odometer_ocr_match is null
+           or odometer_ocr_match in ('match', 'mismatch', 'unreadable'));
 
 create index if not exists service_records_workshop_idx
   on public.service_records (workshop_id);

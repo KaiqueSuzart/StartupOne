@@ -31,7 +31,33 @@ export function ServiceEvidenceRow({ evidence }: ServiceEvidenceRowProps) {
           foto do odômetro{" "}
           <span className="font-mono">{evidence.photoHash.slice(0, 12)}…</span>
         </span>
+        {evidence.photoReading === "match" && (
+          <span className="inline-flex items-center gap-1 font-medium text-emerald-700">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="h-3.5 w-3.5 fill-emerald-600"
+            >
+              <path d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2Z" />
+            </svg>
+            km confere com a foto
+          </span>
+        )}
       </div>
+
+      {evidence.photoReading === "mismatch" && (
+        <p className="mt-2 flex items-start gap-1.5 text-xs text-red-800">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="mt-px h-3.5 w-3.5 shrink-0 fill-red-600"
+          >
+            <path d="M12 2 1 21h22L12 2Zm1 14h-2v2h2v-2Zm0-7h-2v5h2V9Z" />
+          </svg>
+          A quilometragem lida na foto do odômetro não confere com a informada
+          neste registro.
+        </p>
+      )}
       {evidence.cnpjMismatch && (
         <p className="mt-2 flex items-start gap-1.5 text-xs text-amber-800">
           <svg

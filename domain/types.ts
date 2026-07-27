@@ -80,6 +80,12 @@ export interface ServiceEvidence {
   cnpjMismatch: boolean;
   /** sha256 da foto do odômetro; a imagem em si não é pública. */
   photoHash: string;
+  /**
+   * Resultado da conferência entre o km lido na foto e o declarado.
+   * `undefined` em registros anteriores ao OCR — e "não conferido" é
+   * diferente de "não bateu".
+   */
+  photoReading?: "match" | "mismatch" | "unreadable";
 }
 
 export interface ServiceRecord {

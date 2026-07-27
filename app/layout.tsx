@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
@@ -51,9 +52,15 @@ export default function RootLayout({
             <div className="ml-auto flex items-center gap-4">
               <Link
                 href="/como-verificamos"
-                className="text-sm text-slate-600 underline-offset-4 transition-colors hover:text-slate-900 hover:underline"
+                className="hidden text-sm text-slate-600 underline-offset-4 transition-colors hover:text-slate-900 hover:underline sm:inline"
               >
                 Como verificamos
+              </Link>
+              <Link
+                href="/meu-carro"
+                className="text-sm text-slate-600 underline-offset-4 transition-colors hover:text-slate-900 hover:underline"
+              >
+                Meu carro
               </Link>
               <Link
                 href="/oficina/registrar"
@@ -108,6 +115,12 @@ export default function RootLayout({
                   Como verificamos
                 </Link>
                 <Link
+                  href="/meu-carro"
+                  className="text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
+                >
+                  Sou dono de um carro
+                </Link>
+                <Link
                   href="/oficina/registrar"
                   className="text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
                 >
@@ -124,6 +137,8 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        {/* Analytics da Vercel: sem cookies e sem identificar visitante. */}
+        <Analytics />
       </body>
     </html>
   );

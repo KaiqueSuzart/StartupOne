@@ -4,7 +4,9 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { classifyIdentifier } from "@/domain/plate";
 import { evaluateServiceEntry } from "@/domain/serviceEntry";
+import { compareOdometerReading } from "@/domain/odometerReading";
 import { OfflineNfeValidator } from "@/lib/nfe/NfeValidator";
+import { TesseractOdometerReader } from "@/lib/odometer/OdometerReader";
 import { serviceFormSchema } from "@/lib/oficina/formSchema";
 import { describePhotoRejection, describeRejection } from "@/lib/oficina/messages";
 import { inspectOdometerPhoto } from "@/lib/oficina/photo";
@@ -96,6 +98,11 @@ export async function registerServiceAction(
     return { errors: [`Falha ao enviar a foto: ${upload.message}`] };
   }
 
+  // Confere se o número na foto bate com o digitado. Best-effort: leitura
+  // impossível não impede o registro, só deixa de atestar a correspondência.
+  const reading = await new TesseractOdometerReader().read(photo.bytes);
+  const comparison = compareOdometerReading(parsed.data.odometerKm, reading);
+
   const result = await createServiceRecordWriter(supabase).recordService({
     vin: history.vehicle.vin,
     workshopId: workshop.id,
@@ -111,6 +118,8 @@ export async function registerServiceAction(
     nfeCnpjMismatch: decision.cnpjMismatch,
     odometerPhotoPath: path,
     odometerPhotoHash: photo.hash,
+    odometerOcrKm: comparison.readKm,
+    odometerOcrMatch: comparison.match,
   });
 
   if (result.status === "failed") {

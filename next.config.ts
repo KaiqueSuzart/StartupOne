@@ -9,6 +9,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // tesseract.js carrega o worker e o wasm por caminho de arquivo em tempo
+  // de execução; empacotá-lo quebra a resolução (vira "C:\ROOT\node_modules").
+  serverExternalPackages: ["tesseract.js"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

@@ -9,9 +9,11 @@
 -- registro estiver só no Postgres, esta janela existe; documentá-la é mais
 -- honesto do que fingir que não.
 
-begin;
+-- As fotos ficam no Storage e NÃO são apagadas aqui: o Supabase bloqueia
+-- deleção direta em storage.objects (protect_delete). Se quiser limpá-las,
+-- use o painel ou a Storage API. Ficam órfãs num bucket privado — inofensivas.
 
-delete from storage.objects where bucket_id = 'odometer-photos';
+begin;
 
 delete from public.service_records where workshop_id is not null;
 

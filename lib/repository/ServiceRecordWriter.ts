@@ -27,6 +27,9 @@ export interface NewServiceRecordInput {
   nfeCnpjMismatch: boolean;
   odometerPhotoPath: string;
   odometerPhotoHash: string;
+  /** Km lido na foto; null quando a leitura não foi possível. */
+  odometerOcrKm: number | null;
+  odometerOcrMatch: "match" | "mismatch" | "unreadable";
 }
 
 export type RecordServiceResult =

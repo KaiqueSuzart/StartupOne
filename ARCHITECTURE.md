@@ -63,7 +63,18 @@ A escrita tem a **própria costura**, com a mesma filosofia da leitura:
   NfeValidator.validate()               [SEAM DA NOTA FISCAL]
         ├── OfflineNfeValidator → formato + dígito verificador (AGORA)
         └── SefazNfeValidator   → consulta o webservice real   (FUTURO)
+
+  OdometerReader.read()                 [SEAM DA LEITURA DA FOTO]
+        ├── TesseractOdometerReader → OCR local, best-effort   (AGORA)
+        └── leitor com modelo de visão dedicado                (FUTURO)
 ```
+
+O `OdometerReader` fecha o último buraco do modelo de ameaça: antes dele a
+foto provava que existe evidência e que ela não foi trocada, mas ninguém
+conferia se o número nela **bate** com o declarado. A leitura é best-effort —
+falha, timeout ou foto ilegível gravam `unreadable` e não impedem o registro,
+porque travar a oficina por causa de um reflexo no painel custaria mais do
+que ganha. "Não conferido" e "não bateu" são estados distintos no banco.
 
 A leitura dos registros da própria oficina (recibo e "meus registros") tem sua
 própria interface, [WorkshopRecordsReader](lib/repository/WorkshopRecordsReader.ts),

@@ -19,6 +19,7 @@ export interface ServiceRecordRow {
   nfe_emitter_cnpj: string | null;
   nfe_cnpj_mismatch: boolean | null;
   odometer_photo_hash: string | null;
+  odometer_ocr_match: string | null;
 }
 
 export interface RecallRow {
@@ -73,6 +74,9 @@ export function toVehicleHistory(row: VehicleRow): unknown {
               emitterCnpj: record.nfe_emitter_cnpj,
               cnpjMismatch: record.nfe_cnpj_mismatch === true,
               photoHash: record.odometer_photo_hash,
+              ...(record.odometer_ocr_match === null
+                ? {}
+                : { photoReading: record.odometer_ocr_match }),
             },
           }
         : {}),

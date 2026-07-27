@@ -93,7 +93,8 @@ dependência da interface. Para provisionar:
    [`supabase/seed.sql`](supabase/seed.sql) (gerado a partir dos fixtures) →
    [`supabase/workshop.sql`](supabase/workshop.sql) (ponta de escrita) →
    [`supabase/seed_workshops.sql`](supabase/seed_workshops.sql) (oficinas de teste) →
-   [`supabase/interest.sql`](supabase/interest.sql) (captura de interesse).
+   [`supabase/interest.sql`](supabase/interest.sql) (captura de interesse) →
+   [`supabase/telemetry.sql`](supabase/telemetry.sql) (registro de consultas).
 2. Copie `.env.example` para `.env.local` e preencha `SUPABASE_URL` e
    `SUPABASE_ANON_KEY`.
 
@@ -135,6 +136,22 @@ defesas já embutidas:
 
 Se o link for divulgado amplamente, prefira um projeto Supabase separado para
 a demo, mantendo o de desenvolvimento intacto.
+
+## O que medir com a PoC no ar
+
+Duas tabelas só de escrita respondem à pergunta original — as pessoas querem
+isso? Ambas são ilegíveis pela chave pública; só o administrador do banco
+consulta:
+
+```sql
+-- volume e cobertura das consultas
+select date(created_at) as dia, count(*) as consultas,
+       count(*) filter (where found) as com_historico
+from public.search_log group by 1 order by 1 desc;
+
+-- quem pediu para ser avisado
+select plate, count(*) from public.vehicle_interest group by 1 order by 2 desc;
+```
 
 ## Documentação
 

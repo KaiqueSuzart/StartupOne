@@ -40,6 +40,8 @@ export class SupabaseServiceRecordWriter implements ServiceRecordWriter {
       nfe_cnpj_mismatch: input.nfeCnpjMismatch,
       odometer_photo_path: input.odometerPhotoPath,
       odometer_photo_hash: input.odometerPhotoHash,
+      odometer_ocr_km: input.odometerOcrKm,
+      odometer_ocr_match: input.odometerOcrMatch,
     });
 
     if (error !== null) {
