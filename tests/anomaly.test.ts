@@ -86,6 +86,25 @@ describe("detectOdometerAnomalies", () => {
     expect(flags[0].type).toBe("implausible_mileage_jump");
   });
 
+  it("não julga taxa diária entre registros do mesmo dia", () => {
+    // Duas etapas de um mesmo serviço: sem tempo decorrido, não há média.
+    const records = [
+      record("a", "2026-07-27", 26000),
+      record("b", "2026-07-27", 32000),
+    ];
+    expect(detectOdometerAnomalies(records)).toEqual([]);
+  });
+
+  it("ainda acusa regressão entre registros do mesmo dia", () => {
+    const records = [
+      record("a", "2026-07-27", 32000),
+      record("b", "2026-07-27", 26000),
+    ];
+    const flags = detectOdometerAnomalies(records);
+    expect(flags).toHaveLength(1);
+    expect(flags[0].type).toBe("odometer_rollback");
+  });
+
   it("aceita exatamente o limite de km/dia (comparação estrita)", () => {
     const records = [
       record("a", "2020-01-01", 0),

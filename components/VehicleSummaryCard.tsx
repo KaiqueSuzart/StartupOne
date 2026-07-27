@@ -30,14 +30,15 @@ function Stat({
   mono?: boolean;
 }) {
   return (
-    <div className="px-5 py-4">
+    <div className="min-w-0 px-5 py-4">
       <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
         {label}
       </dt>
       <dd
-        className={`mt-1 text-xl font-semibold text-slate-900 ${
-          mono ? "font-mono text-base" : ""
+        className={`mt-1 truncate text-xl font-semibold text-slate-900 ${
+          mono ? "font-mono text-sm" : ""
         }`}
+        title={mono ? value : undefined}
       >
         {value}
       </dd>

@@ -19,9 +19,13 @@ export function formatKm(km: number): string {
   return `${numberFormatter.format(km)} km`;
 }
 
-/** Máscara do VIN: identificador sensível, só os 4 últimos dígitos visíveis. */
+/**
+ * Máscara do VIN: identificador sensível, só os 4 últimos dígitos visíveis.
+ * Prefixo curto de propósito — a máscara comunica o ocultamento sem sugerir
+ * o comprimento real nem estourar o card.
+ */
 export function maskVin(vin: string): string {
-  return `•••••••••••••${vin.slice(-4)}`;
+  return `••••••${vin.slice(-4)}`;
 }
 
 export function formatCnpj(cnpj: string): string {

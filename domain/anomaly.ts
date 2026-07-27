@@ -57,8 +57,15 @@ export function detectOdometerAnomalies(
       continue;
     }
 
+    // Média diária exige tempo decorrido: dois registros do MESMO dia (duas
+    // etapas de um mesmo serviço, por exemplo) não têm taxa definida e não
+    // são julgados por ela. A regra de regressão acima continua valendo.
+    const deltaDays = daysBetween(prev.date, curr.date);
+    if (deltaDays < 1) {
+      continue;
+    }
+
     const deltaKm = curr.odometerKm - prev.odometerKm;
-    const deltaDays = Math.max(daysBetween(prev.date, curr.date), 1);
     if (deltaKm / deltaDays > MAX_PLAUSIBLE_KM_PER_DAY) {
       flags.push(buildFlag("implausible_mileage_jump", prev, curr));
     }

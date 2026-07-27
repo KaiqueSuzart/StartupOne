@@ -19,7 +19,8 @@ export function MileageChart({ records, flaggedIds }: MileageChartProps) {
   }
 
   const model = buildChartModel(records, flaggedIds);
-  const { width, height, points, segments, yTicks, plot } = model;
+  const { width, height, points, segments, yTicks, xTicks, plot } = model;
+  const last = points[points.length - 1];
 
   return (
     <section className="card p-5">
@@ -31,8 +32,8 @@ export function MileageChart({ records, flaggedIds }: MileageChartProps) {
         aria-label={`Evolução da quilometragem de ${formatKm(
           points[0].km,
         )} em ${formatDateBR(points[0].date)} a ${formatKm(
-          points[points.length - 1].km,
-        )} em ${formatDateBR(points[points.length - 1].date)}`}
+          last.km,
+        )} em ${formatDateBR(last.date)}`}
       >
         {yTicks.map((tick) => (
           <g key={tick.km}>
@@ -45,7 +46,7 @@ export function MileageChart({ records, flaggedIds }: MileageChartProps) {
               strokeWidth={1}
             />
             <text
-              x={plot.left - 8}
+              x={plot.left - 10}
               y={tick.y + 4}
               textAnchor="end"
               className="fill-slate-400 text-[11px] [font-variant-numeric:tabular-nums]"
@@ -54,6 +55,8 @@ export function MileageChart({ records, flaggedIds }: MileageChartProps) {
             </text>
           </g>
         ))}
+
+        <path d={model.areaPath} fill="#059669" fillOpacity={0.07} />
 
         {segments.map((segment) => (
           <line
@@ -84,8 +87,8 @@ export function MileageChart({ records, flaggedIds }: MileageChartProps) {
               />
               <text
                 x={point.x}
-                y={point.y + 26}
-                textAnchor="middle"
+                y={point.y - 16}
+                textAnchor={point.anchor}
                 className="fill-red-700 text-[11px] font-semibold"
               >
                 {point.deltaLabel}
@@ -99,26 +102,34 @@ export function MileageChart({ records, flaggedIds }: MileageChartProps) {
           ),
         )}
 
-        <text
-          x={plot.left}
-          y={height - 6}
-          className="fill-slate-400 text-[11px]"
-        >
-          {points[0].year}
-        </text>
-        <text
-          x={width - plot.right}
-          y={height - 6}
-          textAnchor="end"
-          className="fill-slate-400 text-[11px]"
-        >
-          {points[points.length - 1].year}
-        </text>
+        {/* Só o valor final ganha rótulo: o resto vive nos eixos e no tooltip. */}
+        {!last.flagged && (
+          <text
+            x={last.x}
+            y={last.y - 14}
+            textAnchor={last.anchor}
+            className="fill-slate-700 text-[11px] font-semibold"
+          >
+            {formatKm(last.km)}
+          </text>
+        )}
+
+        {xTicks.map((tick) => (
+          <text
+            key={`${tick.x}-${tick.label}`}
+            x={tick.x}
+            y={height - 14}
+            textAnchor={tick.anchor}
+            className="fill-slate-400 text-[11px]"
+          >
+            {tick.label}
+          </text>
+        ))}
       </svg>
       <p className="mt-2 text-xs text-slate-500">
         Cada ponto é um registro do histórico. A linha só pode subir: uma queda
-        significa quilometragem menor que a já registrada. Os valores exatos
-        estão na linha do tempo abaixo.
+        significa quilometragem menor que a já registrada. Passe o cursor sobre
+        um ponto para ver a data e o valor exatos.
       </p>
     </section>
   );
