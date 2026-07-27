@@ -29,10 +29,18 @@ export type AttestorType =
   | "authorized_service"
   | "independent_workshop"
   | "inspection"
+  /** Órgão de registro (Detran/RENAVE) — atesta transferência de propriedade. */
+  | "registry"
   | "owner";
 
+/**
+ * `ownership_transfer` não é um serviço, mas pertence à MESMA linha do tempo:
+ * a transferência registra quilometragem (é o que a vistoria e o RENAVE
+ * fazem) e por isso alimenta a detecção de anomalia como qualquer registro.
+ */
 export type ServiceType =
   | "initial_registration"
+  | "ownership_transfer"
   | "scheduled_maintenance"
   | "oil_change"
   | "brakes"

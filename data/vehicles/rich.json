@@ -49,6 +49,16 @@
       "description": "Substituição de pastilhas e discos dianteiros; fluido de freio novo."
     },
     {
+      "id": "rich-transfer-1",
+      "date": "2021-09-15",
+      "recordedAt": "2021-09-16",
+      "odometerKm": 44100,
+      "workshop": "Detran-SP · Vistoria de transferência",
+      "attestor": "registry",
+      "serviceType": "ownership_transfer",
+      "description": "Transferência de propriedade registrada, com vistoria e leitura de odômetro."
+    },
+    {
       "id": "rich-005",
       "date": "2022-09-30",
       "recordedAt": "2022-10-01",

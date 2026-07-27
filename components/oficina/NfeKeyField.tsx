@@ -55,7 +55,7 @@ export function NfeKeyField({ workshopCnpj }: NfeKeyFieldProps) {
         required
         value={groupDigits(digits)}
         onChange={(event) => setValue(event.target.value)}
-        placeholder="0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000"
+        placeholder="0000 0000 0000 …"
         className={`h-11 w-full rounded-lg border bg-white px-3 font-mono text-sm tracking-wide text-slate-900 shadow-sm transition-colors focus:outline-none focus:ring-4 focus:ring-emerald-600/15 ${
           complete
             ? "border-emerald-400"

@@ -49,6 +49,16 @@
       "description": "Troca de pastilhas traseiras e revisão do freio de estacionamento."
     },
     {
+      "id": "rb-transfer-1",
+      "date": "2021-06-20",
+      "recordedAt": "2021-06-21",
+      "odometerKm": 90100,
+      "workshop": "Detran-MG · Vistoria de transferência",
+      "attestor": "registry",
+      "serviceType": "ownership_transfer",
+      "description": "Transferência de propriedade registrada, com vistoria e leitura de odômetro."
+    },
+    {
       "id": "rb-005",
       "date": "2022-08-04",
       "recordedAt": "2023-06-10",
@@ -67,6 +77,16 @@
       "attestor": "independent_workshop",
       "serviceType": "tires",
       "description": "Troca de dois pneus dianteiros e balanceamento."
+    },
+    {
+      "id": "rb-transfer-2",
+      "date": "2023-03-01",
+      "recordedAt": "2023-03-02",
+      "odometerKm": 59000,
+      "workshop": "Detran-MG · Vistoria de transferência",
+      "attestor": "registry",
+      "serviceType": "ownership_transfer",
+      "description": "Transferência de propriedade registrada, com vistoria e leitura de odômetro."
     }
   ],
   "recalls": [

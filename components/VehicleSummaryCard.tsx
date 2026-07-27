@@ -1,5 +1,6 @@
 import type { MileageSummary } from "@/domain/mileage";
 import { REFERENCE_KM_PER_YEAR } from "@/domain/mileage";
+import type { OwnershipSummary } from "@/domain/ownership";
 import type { Vehicle } from "@/domain/types";
 import { formatKm, maskVin } from "@/lib/format";
 import { PlateBadge } from "./PlateBadge";
@@ -8,6 +9,7 @@ interface VehicleSummaryCardProps {
   vehicle: Vehicle;
   recordCount: number;
   mileage: MileageSummary | null;
+  ownership: OwnershipSummary;
 }
 
 const USAGE = {
@@ -53,8 +55,15 @@ export function VehicleSummaryCard({
   vehicle,
   recordCount,
   mileage,
+  ownership,
 }: VehicleSummaryCardProps) {
   const usage = mileage?.usage != null ? USAGE[mileage.usage] : null;
+  const ownerHint =
+    ownership.transfers === 0
+      ? "sem transferência registrada"
+      : ownership.averageYearsPerOwner !== null
+        ? `${ownership.averageYearsPerOwner.toLocaleString("pt-BR")} anos por dono`
+        : `${ownership.transfers} transferência(s)`;
 
   return (
     <section className="card overflow-hidden">
@@ -69,7 +78,7 @@ export function VehicleSummaryCard({
         </div>
         <PlateBadge plate={vehicle.plate} size="lg" />
       </div>
-      <dl className="grid grid-cols-2 divide-x divide-y divide-slate-100 border-t border-slate-100 sm:grid-cols-4 sm:divide-y-0">
+      <dl className="grid grid-cols-2 divide-x divide-y divide-slate-100 border-t border-slate-100 sm:grid-cols-3 md:grid-cols-5 md:divide-y-0">
         {mileage !== null && (
           <Stat label="Quilometragem" value={formatKm(mileage.currentKm)} />
         )}
@@ -81,6 +90,11 @@ export function VehicleSummaryCard({
             hintColor={usage.color}
           />
         )}
+        <Stat
+          label="Donos"
+          value={String(ownership.ownerCount)}
+          hint={ownerHint}
+        />
         <Stat label="Registros" value={String(recordCount)} />
         {/* Identificador sensível: exibido sempre mascarado. */}
         <Stat label="Chassi (VIN)" value={maskVin(vehicle.vin)} mono />

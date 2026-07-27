@@ -30,10 +30,12 @@ export const serviceRecordSchema = z.object({
     "authorized_service",
     "independent_workshop",
     "inspection",
+    "registry",
     "owner",
   ]),
   serviceType: z.enum([
     "initial_registration",
+    "ownership_transfer",
     "scheduled_maintenance",
     "oil_change",
     "brakes",

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { logoutAction } from "@/app/oficina/login/actions";
 import { ServiceForm } from "@/components/oficina/ServiceForm";
@@ -42,14 +43,22 @@ export default async function RegistrarPage({
             {workshop.name} · CNPJ {formatCnpj(workshop.cnpj)}
           </p>
         </div>
-        <form action={logoutAction}>
-          <button
-            type="submit"
-            className="text-sm text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline"
+        <div className="flex items-center gap-4">
+          <Link
+            href="/oficina/registros"
+            className="text-sm text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline"
           >
-            Sair
-          </button>
-        </form>
+            Meus registros
+          </Link>
+          <form action={logoutAction}>
+            <button
+              type="submit"
+              className="text-sm text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline"
+            >
+              Sair
+            </button>
+          </form>
+        </div>
       </div>
 
       <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">

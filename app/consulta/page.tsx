@@ -32,6 +32,7 @@ export default async function ConsultaPage({
           integrity={result.integrity}
           verdict={result.verdict}
           mileage={result.mileage}
+          ownership={result.ownership}
           ledger={result.ledger}
         />
       );

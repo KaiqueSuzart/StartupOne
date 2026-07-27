@@ -65,6 +65,10 @@ A escrita tem a **própria costura**, com a mesma filosofia da leitura:
         └── SefazNfeValidator   → consulta o webservice real   (FUTURO)
 ```
 
+A leitura dos registros da própria oficina (recibo e "meus registros") tem sua
+própria interface, [WorkshopRecordsReader](lib/repository/WorkshopRecordsReader.ts),
+porque a pergunta é outra: não é "a vida deste veículo", é "o que eu registrei".
+
 Nenhuma das duas implementações futuras muda a tela: a tela fala com as
 interfaces em [lib/repository/ServiceRecordWriter.ts](lib/repository/ServiceRecordWriter.ts)
 e [lib/nfe/NfeValidator.ts](lib/nfe/NfeValidator.ts). O writer é criado por
@@ -114,6 +118,12 @@ testadas em `tests/`:
 - `plate.ts` — normalização e validação de placa (antiga e Mercosul) e VIN
   (17 caracteres, sem I/O/Q).
 - `mileage.ts` — km atual e média anual comparada à referência nacional.
+- `ownership.ts` — quantos donos o veículo teve. A transferência de
+  propriedade é um evento da MESMA linha do tempo (`ownership_transfer`),
+  porque registra quilometragem — é o que a vistoria e o RENAVE fazem — e por
+  isso também alimenta a detecção de anomalia.
+- `nfe.ts` / `cnpj.ts` / `serviceEntry.ts` — validação da nota fiscal, do CNPJ
+  e a regra de aceitação de um novo registro.
 - `integrity.ts` — integridade da linha do tempo: registro retroativo
   (`recordedAt` muito posterior a `date`), serviço declarado para depois do
   próprio registro, e lacunas acima de 24 meses.

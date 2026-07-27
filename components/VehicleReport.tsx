@@ -22,6 +22,7 @@ export function VehicleReport({
   integrity,
   verdict,
   mileage,
+  ownership,
   ledger,
 }: VehicleReportProps) {
   const flaggedIds = new Set(anomalies.map((a) => a.recordId));
@@ -38,6 +39,7 @@ export function VehicleReport({
         vehicle={history.vehicle}
         recordCount={history.records.length}
         mileage={mileage}
+        ownership={ownership}
       />
       {anomalies.length > 0 && <AnomalyAlert anomalies={anomalies} />}
       <RecallNotices recalls={history.recalls} />

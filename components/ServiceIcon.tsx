@@ -4,6 +4,9 @@ import type { ServiceType } from "@/domain/types";
 const PATHS: Record<ServiceType, string> = {
   initial_registration:
     "M12 2 4 5v6c0 5 3.4 9.7 8 11 4.6-1.3 8-6 8-11V5l-8-3Z",
+  // Duas setas em sentidos opostos: troca de mãos.
+  ownership_transfer:
+    "M7.5 3 2 8.5l5.5 5.5v-4h9V7h-9V3Zm9 7.5v4h-9V17h9v4l5.5-5.5-5.5-5Z",
   scheduled_maintenance:
     "M21 11h-2.1a7 7 0 0 0-1-2.4l1.5-1.5-1.5-1.5-1.5 1.5a7 7 0 0 0-2.4-1V4h-2v2.1a7 7 0 0 0-2.4 1L8.1 5.6 6.6 7.1 8.1 8.6a7 7 0 0 0-1 2.4H5v2h2.1a7 7 0 0 0 1 2.4l-1.5 1.5 1.5 1.5 1.5-1.5a7 7 0 0 0 2.4 1V20h2v-2.1a7 7 0 0 0 2.4-1l1.5 1.5 1.5-1.5-1.5-1.5a7 7 0 0 0 1-2.4H21v-2Zm-9 4a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z",
   oil_change:

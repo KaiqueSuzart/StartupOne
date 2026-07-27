@@ -26,16 +26,32 @@ create table if not exists public.service_records (
   workshop      text not null,
   attestor      text not null check (attestor in (
                   'dealership', 'authorized_service',
-                  'independent_workshop', 'inspection', 'owner')),
+                  'independent_workshop', 'inspection', 'registry', 'owner')),
   service_type  text not null check (service_type in (
-                  'initial_registration', 'scheduled_maintenance',
-                  'oil_change', 'brakes', 'tires', 'suspension',
-                  'electrical', 'other')),
+                  'initial_registration', 'ownership_transfer',
+                  'scheduled_maintenance', 'oil_change', 'brakes', 'tires',
+                  'suspension', 'electrical', 'other')),
   description   text not null default ''
 );
 
 create index if not exists service_records_vin_date_idx
   on public.service_records (vin, service_date);
+
+-- Os CHECKs acompanham a evolução do domínio e precisam ser recriados
+-- explicitamente: `create table if not exists` não altera tabela existente.
+alter table public.service_records
+  drop constraint if exists service_records_attestor_check;
+alter table public.service_records
+  add constraint service_records_attestor_check check (attestor in (
+    'dealership', 'authorized_service', 'independent_workshop',
+    'inspection', 'registry', 'owner'));
+
+alter table public.service_records
+  drop constraint if exists service_records_service_type_check;
+alter table public.service_records
+  add constraint service_records_service_type_check check (service_type in (
+    'initial_registration', 'ownership_transfer', 'scheduled_maintenance',
+    'oil_change', 'brakes', 'tires', 'suspension', 'electrical', 'other'));
 
 create table if not exists public.recalls (
   id                      text primary key,

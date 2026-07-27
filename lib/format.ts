@@ -48,11 +48,13 @@ export const ATTESTOR_LABELS: Record<AttestorType, string> = {
   authorized_service: "Rede autorizada",
   independent_workshop: "Oficina independente",
   inspection: "Vistoria",
+  registry: "Órgão de registro",
   owner: "Proprietário",
 };
 
 export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
   initial_registration: "Registro inicial",
+  ownership_transfer: "Transferência de propriedade",
   scheduled_maintenance: "Revisão programada",
   oil_change: "Troca de óleo",
   brakes: "Freios",

@@ -4,6 +4,8 @@ import type { ServiceRecordWriter } from "./ServiceRecordWriter";
 import { FixtureVehicleRepository } from "./FixtureVehicleRepository";
 import { SupabaseVehicleRepository } from "./SupabaseVehicleRepository";
 import { SupabaseServiceRecordWriter } from "./SupabaseServiceRecordWriter";
+import type { WorkshopRecordsReader } from "./WorkshopRecordsReader";
+import { SupabaseWorkshopRecordsReader } from "./SupabaseWorkshopRecordsReader";
 
 // ── PONTO DE COMPOSIÇÃO ─────────────────────────────────────────────────
 // O ÚNICO lugar do sistema que decide qual implementação de
@@ -41,5 +43,16 @@ export function createServiceRecordWriter(
   return new SupabaseServiceRecordWriter(client);
 }
 
+/** Leitura dos registros da própria oficina — também por requisição. */
+export function createWorkshopRecordsReader(
+  client: SupabaseClient,
+): WorkshopRecordsReader {
+  return new SupabaseWorkshopRecordsReader(client);
+}
+
 export type { VehicleRepository } from "./VehicleRepository";
 export type { ServiceRecordWriter } from "./ServiceRecordWriter";
+export type {
+  WorkshopRecordsReader,
+  WorkshopRecordSummary,
+} from "./WorkshopRecordsReader";

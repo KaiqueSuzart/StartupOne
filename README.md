@@ -44,9 +44,15 @@ Acesse **/oficina/login** com uma das credenciais de demonstração:
 | `oficina.central@lastro.dev` | `lastro-demo-2026` | 11.222.333/0001-81 |
 | `auto.center@lastro.dev` | `lastro-demo-2026` | 04.252.011/0001-10 |
 
-O fluxo é: placa → km → tipo de serviço → chave da NF-e → foto do odômetro. O
-registro aparece **na hora** no relatório do comprador e **não pode ser editado
-nem removido** — nem pela oficina, nem pelo administrador do banco via API.
+O fluxo é: placa → km → tipo de serviço → chave da NF-e → foto do odômetro. Ao
+gravar, a oficina recebe um **recibo com o elo do registro na cadeia**
+(`/oficina/recibo/[id]`) e pode rever tudo que enviou em `/oficina/registros`.
+O registro aparece **na hora** no relatório do comprador e **não pode ser
+editado nem removido** — nem pela oficina, nem pelo administrador do banco via
+API.
+
+Não tem uma chave de NF-e à mão? O formulário tem o link **"Preencher com chave
+de demonstração"**, que gera uma chave válida com o CNPJ da própria oficina.
 
 Para gerar uma chave de NF-e válida para teste, rode
 `node --env-file=.env.local scripts/demo-registro.mjs BRA0S17 26000` (o script

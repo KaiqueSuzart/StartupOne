@@ -9,9 +9,9 @@ export interface VehicleBrief {
 /** Confirmação visual do veículo antes de gravar algo permanente nele. */
 export function SelectedVehicleCard({ vehicle }: { vehicle: VehicleBrief }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3">
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl bg-slate-50 p-3">
       <PlateBadge plate={vehicle.plate} />
-      <div className="min-w-0 text-sm">
+      <div className="min-w-0 flex-1 text-sm">
         <p className="font-semibold text-slate-900">{vehicle.label}</p>
         <p className="text-slate-500">
           {vehicle.lastKm === null
@@ -21,7 +21,7 @@ export function SelectedVehicleCard({ vehicle }: { vehicle: VehicleBrief }) {
       </div>
       <a
         href="/oficina/registrar"
-        className="ml-auto shrink-0 text-xs text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline"
+        className="shrink-0 text-xs text-slate-500 underline-offset-4 hover:text-slate-900 hover:underline"
       >
         Trocar
       </a>

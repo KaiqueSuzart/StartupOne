@@ -111,5 +111,6 @@ export async function registerServiceAction(
   }
 
   revalidatePath("/consulta");
-  redirect(`/consulta?placa=${history.vehicle.plate}`);
+  // Recibo antes do relatório: a oficina precisa ver o que gravou.
+  redirect(`/oficina/recibo/${result.recordId}`);
 }

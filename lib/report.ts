@@ -3,6 +3,7 @@ import { detectOdometerAnomalies, type AnomalyFlag } from "@/domain/anomaly";
 import { detectIntegrityIssues, type IntegrityIssue } from "@/domain/integrity";
 import { buildLedgerChain, type LedgerEntry } from "@/domain/ledger";
 import { summarizeMileage, type MileageSummary } from "@/domain/mileage";
+import { summarizeOwnership, type OwnershipSummary } from "@/domain/ownership";
 import { summarizeVerdict, type VerdictSummary } from "@/domain/verdict";
 import type { VehicleHistory } from "@/domain/types";
 import { vehicleRepository } from "@/lib/repository";
@@ -20,6 +21,7 @@ export interface VehicleReport {
   /** Resposta de 5 segundos: o veredito exibido no topo do relatório. */
   verdict: VerdictSummary;
   mileage: MileageSummary | null;
+  ownership: OwnershipSummary;
   /** Cadeia de hashes simulada — evidência didática de imutabilidade. */
   ledger: LedgerEntry[];
 }
@@ -61,6 +63,7 @@ export async function lookupVehicleReport(
       recalls: history.recalls,
     }),
     mileage: summarizeMileage(history.records),
+    ownership: summarizeOwnership(history.records),
     ledger: buildLedgerChain(history.records),
   };
 }
