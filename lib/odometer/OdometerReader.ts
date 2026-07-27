@@ -40,7 +40,17 @@ export class TesseractOdometerReader implements OdometerReader {
     // Import dinâmico: se o pacote não estiver disponível no ambiente, o
     // catch acima assume e a aplicação continua funcionando.
     const { createWorker } = await import("tesseract.js");
-    const worker = await createWorker("eng");
+    const { join } = await import("node:path");
+    const { tmpdir } = await import("node:os");
+
+    // O modelo de idioma vem versionado em tessdata/: sem isso o tesseract
+    // tentaria baixá-lo em runtime, o que falha em sistema de arquivos
+    // somente-leitura (Vercel) e adicionaria segundos a cada cold start.
+    const worker = await createWorker("eng", 1, {
+      langPath: join(process.cwd(), "tessdata"),
+      cachePath: tmpdir(),
+      gzip: false,
+    });
     try {
       await worker.setParameters({ tessedit_char_whitelist: "0123456789.," });
       const { data } = await worker.recognize(Buffer.from(image));

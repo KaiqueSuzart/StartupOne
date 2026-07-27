@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
   // tesseract.js carrega o worker e o wasm por caminho de arquivo em tempo
   // de execução; empacotá-lo quebra a resolução (vira "C:\ROOT\node_modules").
   serverExternalPackages: ["tesseract.js"],
+  // Garante que o modelo de idioma do OCR viaje junto no deploy.
+  outputFileTracingIncludes: {
+    "/oficina/registrar": ["./tessdata/**"],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
