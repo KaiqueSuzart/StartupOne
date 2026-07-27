@@ -48,6 +48,22 @@ Três mecanismos elevam o custo da fraude:
   empresa), nunca o documento fiscal completo.
 - **Mensagem de login genérica**, para não revelar quais e-mails existem.
 
+## Demonstração pública
+
+Com o app no ar e as credenciais de teste documentadas, a superfície de
+escrita fica aberta — e, como o histórico é append-only, registro indevido
+**não se apaga pela aplicação**. Por isso a defesa é anterior à escrita:
+
+- **Cota de 20 registros por oficina por dia** (trigger no Postgres). Folgada
+  para uso real de MVP, estreita para quem quiser poluir a base.
+- **Reset administrativo** (`supabase/reset_demo.sql`) devolve a base ao
+  estado semeado. Exige credencial de administrador do banco.
+
+Essa última é a assimetria que vale registrar: enquanto os dados vivem só no
+Postgres, **o dono do banco consegue apagar o que a oficina e a aplicação não
+conseguem**. É exatamente a lacuna que a ancoragem on-chain fecha na próxima
+fase. Documentar isso é mais honesto do que alegar imutabilidade absoluta.
+
 ## Práticas gerais
 
 - **Sem segredos no repositório.** As credenciais do Supabase ficam em `.env.local`

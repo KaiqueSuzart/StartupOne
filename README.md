@@ -91,6 +91,42 @@ dependência da interface. Para provisionar:
 A aplicação usa **somente a chave anon**, e o Row Level Security libera apenas `SELECT`:
 nenhuma escrita é possível pela aplicação. A `service_role` não existe no projeto.
 
+## Publicar (Vercel)
+
+O projeto está pronto para deploy; falta apenas a autenticação da sua conta,
+que é interativa.
+
+```bash
+npx vercel login       # abre o navegador para autorizar
+npx vercel --prod      # primeira vez: aceite os padrões detectados (Next.js)
+```
+
+Depois, em **Project → Settings → Environment Variables**, defina as duas
+variáveis (as mesmas do `.env.local`) e faça um redeploy:
+
+| Variável | Observação |
+| --- | --- |
+| `SUPABASE_URL` | `https://SEU-PROJETO.supabase.co` |
+| `SUPABASE_ANON_KEY` | Apenas a chave **anon**. A `service_role` não vai para lugar nenhum. |
+
+**Sem essas variáveis o deploy funciona assim mesmo**: a consulta pública cai
+nos fixtures locais e a área da oficina exibe um aviso em vez de erro.
+
+### Antes de divulgar o link
+
+A demonstração é pública e as credenciais da oficina estão neste README —
+qualquer visitante pode gravar registros, e o histórico é append-only. As
+defesas já embutidas:
+
+- **Cota de 20 registros por oficina por dia**, aplicada por trigger no
+  Postgres (`supabase/workshop.sql`).
+- **Reset administrativo**: `supabase/reset_demo.sql` apaga os registros
+  gravados por oficinas e devolve a base ao estado semeado. Só roda com
+  credencial de administrador — a aplicação não consegue.
+
+Se o link for divulgado amplamente, prefira um projeto Supabase separado para
+a demo, mantendo o de desenvolvimento intacto.
+
 ## Documentação
 
 - [ARCHITECTURE.md](ARCHITECTURE.md) — camadas e a costura para a blockchain

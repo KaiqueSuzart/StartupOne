@@ -95,6 +95,43 @@ create trigger service_records_monotonic_odometer
   before insert on public.service_records
   for each row execute function public.enforce_monotonic_odometer();
 
+-- ── Cota diária de escrita ────────────────────────────────────────────
+-- A demonstração é pública e as credenciais de teste também. Como o
+-- histórico é append-only, registro ruim não se apaga pela aplicação — então
+-- a defesa tem que ser ANTES da escrita. A cota limita o estrago sem
+-- atrapalhar um uso real de oficina (20 serviços/dia é folgado para o MVP).
+create or replace function public.enforce_daily_write_quota()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  today_count integer;
+begin
+  if new.workshop_id is null then
+    return new;
+  end if;
+
+  select count(*) into today_count
+  from public.service_records
+  where workshop_id = new.workshop_id
+    and recorded_at = current_date;
+
+  if today_count >= 20 then
+    raise exception
+      'limite diario de registros atingido para esta oficina (20 por dia)'
+      using errcode = 'check_violation';
+  end if;
+
+  return new;
+end $$;
+
+drop trigger if exists service_records_daily_quota on public.service_records;
+create trigger service_records_daily_quota
+  before insert on public.service_records
+  for each row execute function public.enforce_daily_write_quota();
+
 -- ── Storage da foto do odômetro ───────────────────────────────────────
 -- Bucket PRIVADO: a foto pode capturar interior do veículo, pessoas ou
 -- local. O relatório público mostra apenas o hash, provando que a evidência

@@ -1,4 +1,7 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import {
+  createSupabaseServerClient,
+  isSupabaseConfigured,
+} from "@/lib/supabase/server";
 
 /**
  * Identidade da oficina autenticada, lida SEMPRE do servidor. Nenhum campo
@@ -13,6 +16,12 @@ export interface AuthenticatedWorkshop {
 }
 
 export async function getAuthenticatedWorkshop(): Promise<AuthenticatedWorkshop | null> {
+  // Sem Supabase configurado não há sessão — devolver null faz as rotas
+  // protegidas caírem no login, que explica a situação, em vez de estourar.
+  if (!isSupabaseConfigured()) {
+    return null;
+  }
+
   const supabase = await createSupabaseServerClient();
 
   // getUser() valida o token no servidor de auth; getSession() confiaria no

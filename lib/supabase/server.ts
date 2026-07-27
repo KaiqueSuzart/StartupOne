@@ -6,6 +6,19 @@ import { cookies } from "next/headers";
  * ANON: as policies de RLS é que decidem o que a sessão pode fazer — nunca a
  * service_role, que ignoraria toda a proteção.
  */
+/**
+ * Sem credenciais não há sessão possível. A consulta pública continua
+ * funcionando com os fixtures; só a área da oficina depende disto.
+ */
+export function isSupabaseConfigured(): boolean {
+  return (
+    process.env.SUPABASE_URL !== undefined &&
+    process.env.SUPABASE_URL !== "" &&
+    process.env.SUPABASE_ANON_KEY !== undefined &&
+    process.env.SUPABASE_ANON_KEY !== ""
+  );
+}
+
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
 
