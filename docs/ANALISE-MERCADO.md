@@ -85,7 +85,21 @@ Rejeitados por ora: score 0–100 (precisão falsa com só 2 sinais), QR code (s
 - Camada de atestação multi-fonte com hierarquia de confiança — o ativo que nenhum player BR tem.
 - White-label de seminovos para 1 montadora + API de risco para banco/seguradora do grupo (receita recorrente).
 - Blockchain só quando (e se) a rede existir — como mecanismo de auditoria, nunca como headline; "registro que ninguém consegue apagar, nem a loja" vende, "blockchain" não.
+
+**Ideia futura (pós-consolidação, sugerida pelo time em 2026-10)** — km enviado automaticamente pelo próprio carro:
+
+- Carro novo já sai com sensor/telemetria que reporta o km sozinho, sem depender de oficina digitar — é o atestador mais forte da hierarquia (telemetria > SISCSV > RENAVE > rede autorizada > oficina > dono).
+- Caminho 1: telemetria de fábrica — exige acordo com montadora (ver seção 4 e a lição BMW VerifyCar: quem tem o dado tende a guardá-lo; entrar via atestados derivados).
+- Caminho 2: dispositivo OBD-II plugável — funciona também em usados e não depende da montadora; custo de hardware e instalação a avaliar.
+- Entra como mais um atestador na mesma costura de escrita (`ServiceRecordWriter`), não como produto separado.
 ---
+
+## Atualização (2026-10-05)
+
+Três pesquisas novas e a síntese dos critérios de sucesso estão em
+[CRITERIOS-DE-SUCESSO.md](CRITERIOS-DE-SUCESSO.md). Mudanças relevantes desde julho: o RENAVE
+entrou em vigor (28/09/2026) com hodômetro obrigatório mas sem acesso de terceiros; nenhum
+sistema de oficina tem API pública; a NFS-e nacional passa a valer para o Simples em 01/11/2026.
 
 ## Anexos — pesquisa completa
 
