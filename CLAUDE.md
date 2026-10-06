@@ -23,8 +23,8 @@ de anomalia de km (funcionalidade de primeira classe), recalls, integridade do h
 semáforo de risco atrás da costura `RiskBureau`, e a **ponta de escrita**: organizações
 (oficina, revenda) com vários membros registram eventos com NF-e ou NFS-e e foto do
 odômetro; correção encadeada; importação RENAVE pela revenda; API v1 interna; painéis de
-oficina, revenda e métricas; deploy (Vercel Pro + Supabase Pro); LGPD mínima. Fonte de
-dados: fixtures por padrão, Supabase quando há `.env.local`.
+oficina, revenda e métricas; deploy (planos gratuitos até o piloto, Pro no primeiro uso
+comercial); LGPD mínima. Fonte de dados: fixtures por padrão, Supabase quando há `.env.local`.
 
 **Não entra (não construir):** blockchain/viem/carteiras, SEFAZ por certificado, parceria
 com montadora, sensor ou OBD no carro, cobrança real (tela de planos sim), app nativo,

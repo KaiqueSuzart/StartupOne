@@ -36,19 +36,33 @@ rodar no piloto escala a 300 oficinas e 100 mil consultas por mês sem troca de 
 |----------|-----------|-------|-------|--------|
 | Local | `npm run dev` | nenhum (fixtures) ou staging | fixtures | nenhuma |
 | Preview | deploy de preview da Vercel | Supabase **staging** (sa-east-1) | seed + teste | `sb_publishable` de staging, `lst_test_` |
-| Produção | Vercel Pro, função em `gru1` | Supabase **produção** (sa-east-1) | seed + real | `sb_publishable` de produção, `lst_live_` |
+| Produção | Vercel, função em `gru1` | Supabase **produção** (sa-east-1) | seed + real | `sb_publishable` de produção, `lst_live_` |
 
-Serviços: domínio próprio; e-mail transacional próprio configurado como SMTP do Supabase Auth
-(o padrão envia 2 e-mails por hora); Cloudflare Turnstile no login e nos formulários públicos
-(nativo no Supabase Auth); 1 regra de rate limit por IP no firewall da Vercel em `/consulta/*` e
-`/api/v1/*`; Sentry (plano gratuito); monitor de uptime e status page (plano gratuito); GitHub
-Actions com lint, tipos, testes e build; Dependabot. Chaves novas do Supabase
-(`sb_publishable`, sem `sb_secret` criada) e JWT com chave assimétrica, lendo claims com
-`getClaims()`.
+**Planos: gratuitos até o piloto, pagos a partir do primeiro uso comercial.**
 
-Custo estimado: US$ 45 a 50 por mês no piloto (Vercel Pro 1 assento + Supabase Pro), US$ 300 a
-350 em 100 mil consultas e 20 mil registros por mês. PITR (US$ 100/mês) só quando o livro virar
-prova para terceiros. Fonte: anexo de plataforma.
+| Fase | Vercel | Supabase | Por quê |
+|------|--------|----------|---------|
+| Desenvolvimento e apresentação (dados fictícios, sem receita) | Hobby, US$ 0 | Free, 2 projetos (produção e staging), US$ 0 | Hobby é "uso pessoal, não comercial": demo acadêmica sem receita cabe. Free pausa após 7 dias sem atividade e não tem backup: aceitável enquanto tudo é regenerável do seed |
+| Piloto (dado real, revenda pagando) | Pro, US$ 20 por assento | Pro, US$ 25 (backups diários, sem pausa) | uso comercial exige Pro na Vercel; dado real exige backup e banco que não pausa |
+
+Cuidados no gratuito: monitor de uptime (gratuito) chamando a cada 5 minutos uma página que
+consulta o banco, para o projeto Free não pausar; conferir o painel do Supabase na véspera de
+qualquer apresentação; Hobby tem 1 regra de rate limit (suficiente) e cron só diário, então as
+rotinas agendadas ficam no `pg_cron` do Supabase, não na Vercel; logs de 1 hora (Sentry cobre
+os erros); no Hobby a conta é de uma pessoa, e deploy por push de outro autor pode ser
+bloqueado (a confirmar na configuração do projeto; se bloquear, o dono da conta faz o merge).
+
+Serviços gratuitos em qualquer fase: domínio próprio (único custo, ~R$ 40/ano); e-mail
+transacional em plano gratuito como SMTP do Supabase Auth (o padrão envia 2 e-mails por hora);
+Cloudflare Turnstile no login e nos formulários públicos (nativo no Supabase Auth); 1 regra de
+rate limit por IP no firewall da Vercel em `/consulta/*` e `/api/v1/*`; Sentry; monitor de
+uptime e status page; GitHub Actions com lint, tipos, testes e build; Dependabot; Upstash.
+Chaves novas do Supabase (`sb_publishable`, sem `sb_secret` criada) e JWT com chave
+assimétrica, lendo claims com `getClaims()`.
+
+Custo: US$ 0 até o piloto. No piloto, US$ 45 a 50 por mês (Vercel Pro 1 assento + Supabase
+Pro); em escala (100 mil consultas e 20 mil registros por mês) US$ 300 a 350. PITR (US$ 100
+por mês) só quando o livro virar prova para terceiros. Fonte: anexo de plataforma.
 
 ## 4. Modelo de dados v2
 
@@ -289,7 +303,7 @@ Plus se precisar).
 | 2. Relatório v2 | 2 e 3 | item 9.2 | os 4 veículos de demonstração contam a história completa (fraude, recall, correção, RENAVE) |
 | 3. Institucional | 4 | item 9.3 | landing nova no ar com LGPD |
 | 4. Cara de produto | 5 e 6 | itens 9.4 a 9.8 | fluxo de 30 s testado em celular real; painel da revenda gera link e QR; métricas lendo o banco |
-| 5. Piloto | após a apresentação | `RiskBureau` real, validação online de nota, onboarding por convite com CNPJ e CNAE, chaves de API para a revenda, réplica, cobrança | primeira oficina real registrando e primeira revenda com carro anunciado |
+| 5. Piloto | após a apresentação | migração para Vercel Pro e Supabase Pro antes do primeiro dado real; `RiskBureau` real, validação online de nota, onboarding por convite com CNPJ e CNAE, chaves de API para a revenda, réplica, cobrança | primeira oficina real registrando e primeira revenda com carro anunciado |
 
 Cada fase gera `docs/superpowers/specs/<data>-<fase>-design.md` curto e um plano em
 `docs/superpowers/plans/`. Esta spec é atualizada quando uma decisão aqui mudar.

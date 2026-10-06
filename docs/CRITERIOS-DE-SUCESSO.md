@@ -46,12 +46,13 @@ VerifyCar, Wejo e Otonomo. O padrão é consistente:
    foi absorvida (US$ 15 mi de receita contra US$ 250 mi de despesa), a FTC proibiu a GM de
    vender dados. O Data Act europeu aponta o caminho realista: consentimento do dono para puxar o
    dado do carro. Guardar a ideia do sensor como atestador futuro, sem depender de montadora.
-6. **Plataforma:** Vercel Pro e Supabase Pro desde o primeiro dia público (Hobby é proibido para
-   uso comercial; Free pausa em 1 semana e não tem backup). Cerca de US$ 45 a 50 por mês no
-   piloto, US$ 300 a 350 em 100 mil consultas por mês. Cinco lacunas de segurança a fechar antes
-   de dado real: upload da foto (limite de 1 MB na Server Action), chaves legadas do Supabase
-   (saem até o fim de 2026), MFA para oficina, trilha de auditoria e réplica das fotos (Storage
-   não entra no backup).
+6. **Plataforma:** planos gratuitos até o piloto (Vercel Hobby é só para uso não comercial e
+   o Supabase Free pausa em 1 semana sem atividade e não tem backup: aceitável enquanto os dados
+   são fictícios e regeneráveis). Pro nos dois quando entrar dado real e revenda pagando: cerca de
+   US$ 45 a 50 por mês no piloto, US$ 300 a 350 em 100 mil consultas por mês. Cinco lacunas de
+   segurança a fechar antes de dado real: upload da foto (limite de 1 MB na Server Action),
+   chaves legadas do Supabase (saem até o fim de 2026), MFA para oficina, trilha de auditoria e
+   réplica das fotos (Storage não entra no backup).
 7. **LGPD:** o Lastro é agente de pequeno porte (Res. ANPD 2/2022): registro simplificado de 8
    campos, sem encarregado obrigatório, mas canal para o titular obrigatório; incidente comunicado
    em 6 dias úteis. Placa com histórico é dado pessoal: nunca exibir o dono, dado pessoal fora do
