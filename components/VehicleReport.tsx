@@ -29,11 +29,11 @@ export function VehicleReport({
   coverage,
   ledger,
 }: VehicleReportProps) {
-  const flaggedIds = new Set(anomalies.map((a) => a.recordId));
+  const flaggedIds = new Set(anomalies.map((a) => a.eventId));
   const backdatedIds = new Set(
     integrity
-      .filter((issue) => issue.type === "backdated_record")
-      .map((issue) => issue.recordId),
+      .filter((issue) => issue.type === "backdated_event")
+      .map((issue) => issue.eventId),
   );
 
   return (
@@ -41,7 +41,7 @@ export function VehicleReport({
       <VerdictBanner verdict={verdict} />
       <VehicleSummaryCard
         vehicle={history.vehicle}
-        recordCount={history.records.length}
+        eventCount={history.events.length}
         mileage={mileage}
         ownership={ownership}
       />
@@ -50,9 +50,9 @@ export function VehicleReport({
       <MaintenanceAlerts alerts={maintenance} />
       <HistoryNotices issues={integrity} />
       <CoverageCard coverage={coverage} />
-      <MileageChart records={history.records} flaggedIds={flaggedIds} />
+      <MileageChart events={history.events} flaggedIds={flaggedIds} />
       <Timeline
-        records={history.records}
+        events={history.events}
         flaggedIds={flaggedIds}
         backdatedIds={backdatedIds}
         ledger={ledger}

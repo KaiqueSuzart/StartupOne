@@ -35,7 +35,7 @@ const serviceEvidenceSchema = z.object({
   photoReading: z.enum(["match", "mismatch", "unreadable"]).optional(),
 });
 
-export const serviceRecordSchema = z.object({
+export const vehicleEventSchema = z.object({
   id: z.string().min(1),
   date: isoDateSchema,
   recordedAt: isoDateSchema,
@@ -87,7 +87,7 @@ export const recallNoticeSchema = z.object({
 
 export const vehicleHistorySchema = z.object({
   vehicle: vehicleSchema,
-  records: z.array(serviceRecordSchema).min(1),
+  events: z.array(vehicleEventSchema).min(1),
   recalls: z.array(recallNoticeSchema),
 });
 

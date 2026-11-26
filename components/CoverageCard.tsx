@@ -10,7 +10,7 @@ interface CoverageCardProps {
  * o que separa um relatório honesto de um selo vazio.
  */
 export function CoverageCard({ coverage }: CoverageCardProps) {
-  if (coverage.totalRecords === 0) {
+  if (coverage.totalEvents === 0) {
     return null;
   }
 
@@ -48,7 +48,7 @@ export function CoverageCard({ coverage }: CoverageCardProps) {
       </p>
       <p className="mt-1 text-xs text-slate-500">
         {coverage.withEvidence > 0
-          ? `${coverage.withEvidence} de ${coverage.totalRecords} registros têm nota fiscal e foto anexadas pela oficina.`
+          ? `${coverage.withEvidence} de ${coverage.totalEvents} registros têm nota fiscal e foto anexadas pela oficina.`
           : "Nenhum registro tem nota fiscal anexada — este histórico veio importado, sem evidência da fonte."}
       </p>
     </section>

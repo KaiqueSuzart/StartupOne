@@ -1,4 +1,4 @@
-import type { ServiceItem, ServiceRecord } from "./types";
+import type { ServiceItem, VehicleEvent } from "./types";
 
 /**
  * Alertas de manutenção derivados da própria linha do tempo — nenhum campo
@@ -69,14 +69,14 @@ function isOverdue(
 }
 
 export function detectMaintenanceAlerts(
-  records: readonly ServiceRecord[],
+  events: readonly VehicleEvent[],
   today: string,
 ): MaintenanceAlert[] {
-  if (records.length === 0) {
+  if (events.length === 0) {
     return [];
   }
 
-  const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
   const currentKm = Math.max(...sorted.map((r) => r.odometerKm));
   const alerts: MaintenanceAlert[] = [];
 
@@ -85,7 +85,7 @@ export function detectMaintenanceAlerts(
   >) {
     const last = [...sorted]
       .reverse()
-      .find((record) => record.items?.includes(item) === true);
+      .find((event) => event.items?.includes(item) === true);
 
     if (last === undefined) {
       // Sem registro: só avisa se o veículo já passou do intervalo de vida.
@@ -114,7 +114,7 @@ export function detectMaintenanceAlerts(
   // A próxima revisão declarada mais recentemente é a que vale.
   const withNext = [...sorted]
     .reverse()
-    .find((record) => record.nextServiceKm !== undefined);
+    .find((event) => event.nextServiceKm !== undefined);
   if (withNext?.nextServiceKm !== undefined && currentKm > withNext.nextServiceKm) {
     alerts.push({
       type: "next_service_overdue",

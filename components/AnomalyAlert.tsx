@@ -40,7 +40,7 @@ export function AnomalyAlert({ anomalies }: AnomalyAlertProps) {
         <ul className="space-y-2 text-sm text-slate-700">
           {anomalies.map((flag) => (
             <li
-              key={`${flag.previousRecordId}-${flag.recordId}`}
+              key={`${flag.previousEventId}-${flag.eventId}`}
               className="flex gap-2"
             >
               <span aria-hidden="true" className="text-red-500">

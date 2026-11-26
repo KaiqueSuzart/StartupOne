@@ -70,11 +70,11 @@ async function lookup(rawQuery: string): Promise<VehicleReportResult> {
     return { status: "not_found", query: value };
   }
 
-  const anomalies = detectOdometerAnomalies(history.records);
-  const integrity = detectIntegrityIssues(history.records);
+  const anomalies = detectOdometerAnomalies(history.events);
+  const integrity = detectIntegrityIssues(history.events);
   // Data de hoje injetada na borda: o domínio não lê o relógio.
   const today = new Date().toISOString().slice(0, 10);
-  const maintenance = detectMaintenanceAlerts(history.records, today);
+  const maintenance = detectMaintenanceAlerts(history.events, today);
 
   return {
     status: "found",
@@ -88,9 +88,9 @@ async function lookup(rawQuery: string): Promise<VehicleReportResult> {
       recalls: history.recalls,
       maintenance,
     }),
-    mileage: summarizeMileage(history.records),
-    ownership: summarizeOwnership(history.records),
-    coverage: summarizeCoverage(history.records, today),
-    ledger: buildLedgerChain(history.records),
+    mileage: summarizeMileage(history.events),
+    ownership: summarizeOwnership(history.events),
+    coverage: summarizeCoverage(history.events, today),
+    ledger: buildLedgerChain(history.events),
   };
 }

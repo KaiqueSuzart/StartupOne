@@ -1,4 +1,4 @@
-import type { ServiceRecord } from "./types";
+import type { VehicleEvent } from "./types";
 
 /**
  * Verificações de integridade da própria linha do tempo — complementares à
@@ -11,7 +11,7 @@ export type IntegritySeverity = "alert" | "notice";
 
 interface BaseIssue {
   severity: IntegritySeverity;
-  recordId: string;
+  eventId: string;
 }
 
 export type IntegrityIssue =
@@ -21,14 +21,14 @@ export type IntegrityIssue =
       recordedAt: string;
     })
   | (BaseIssue & {
-      type: "backdated_record";
+      type: "backdated_event";
       serviceDate: string;
       recordedAt: string;
       delayDays: number;
     })
   | (BaseIssue & {
       type: "history_gap";
-      previousRecordId: string;
+      previousEventId: string;
       previousDate: string;
       currentDate: string;
       gapMonths: number;
@@ -50,30 +50,30 @@ function daysBetween(earlierIso: string, laterIso: string): number {
 }
 
 export function detectIntegrityIssues(
-  records: readonly ServiceRecord[],
+  events: readonly VehicleEvent[],
 ): IntegrityIssue[] {
-  const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
   const issues: IntegrityIssue[] = [];
 
-  for (const record of sorted) {
-    const delayDays = daysBetween(record.date, record.recordedAt);
+  for (const event of sorted) {
+    const delayDays = daysBetween(event.date, event.recordedAt);
 
     if (delayDays < 0) {
       // Serviço declarado para depois do próprio registro: impossível.
       issues.push({
         type: "future_service_date",
         severity: "alert",
-        recordId: record.id,
-        serviceDate: record.date,
-        recordedAt: record.recordedAt,
+        eventId: event.id,
+        serviceDate: event.date,
+        recordedAt: event.recordedAt,
       });
     } else if (delayDays > BACKDATING_TOLERANCE_DAYS) {
       issues.push({
-        type: "backdated_record",
+        type: "backdated_event",
         severity: "alert",
-        recordId: record.id,
-        serviceDate: record.date,
-        recordedAt: record.recordedAt,
+        eventId: event.id,
+        serviceDate: event.date,
+        recordedAt: event.recordedAt,
         delayDays,
       });
     }
@@ -88,8 +88,8 @@ export function detectIntegrityIssues(
       issues.push({
         type: "history_gap",
         severity: "notice",
-        recordId: current.id,
-        previousRecordId: previous.id,
+        eventId: current.id,
+        previousEventId: previous.id,
         previousDate: previous.date,
         currentDate: current.date,
         gapMonths: Math.round(gapDays / DAYS_PER_MONTH),

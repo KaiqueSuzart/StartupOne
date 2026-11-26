@@ -44,7 +44,7 @@ export interface VehicleRow {
 }
 
 export function toVehicleHistory(row: VehicleRow): unknown {
-  const records = [...row.service_records]
+  const events = [...row.service_records]
     .sort((a, b) => a.service_date.localeCompare(b.service_date))
     .map((record) => ({
       id: record.id,
@@ -104,7 +104,7 @@ export function toVehicleHistory(row: VehicleRow): unknown {
       modelYear: row.model_year,
       color: row.color,
     },
-    records,
+    events,
     recalls,
   };
 }

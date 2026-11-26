@@ -14,7 +14,7 @@ function describe(issue: IntegrityIssue): string {
       )}, data posterior ao próprio registro (${formatDateBR(
         issue.recordedAt,
       )}).`;
-    case "backdated_record":
+    case "backdated_event":
       return `Serviço declarado em ${formatDateBR(
         issue.serviceDate,
       )} só entrou no histórico em ${formatDateBR(issue.recordedAt)} — ${
@@ -38,7 +38,7 @@ export function HistoryNotices({ issues }: HistoryNoticesProps) {
       <ul className="mt-3 space-y-2.5">
         {issues.map((issue, index) => (
           <li
-            key={`${issue.type}-${issue.recordId}-${index}`}
+            key={`${issue.type}-${issue.eventId}-${index}`}
             className="flex items-start gap-3 text-sm"
           >
             <span

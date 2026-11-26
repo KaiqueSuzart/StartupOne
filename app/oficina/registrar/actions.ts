@@ -59,8 +59,8 @@ export async function registerServiceAction(
   }
 
   const lastOdometerKm =
-    history.records.length > 0
-      ? Math.max(...history.records.map((record) => record.odometerKm))
+    history.events.length > 0
+      ? Math.max(...history.events.map((event) => event.odometerKm))
       : null;
 
   const decision = evaluateServiceEntry({

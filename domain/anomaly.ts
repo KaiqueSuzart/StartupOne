@@ -1,4 +1,4 @@
-import type { ServiceRecord } from "./types";
+import type { VehicleEvent } from "./types";
 
 /**
  * Detecção de anomalia de quilometragem — o diferencial do produto.
@@ -11,8 +11,8 @@ export type AnomalyType = "odometer_rollback" | "implausible_mileage_jump";
 export interface AnomalyFlag {
   type: AnomalyType;
   /** O registro POSTERIOR do par inconsistente — é ele que a UI destaca. */
-  recordId: string;
-  previousRecordId: string;
+  eventId: string;
+  previousEventId: string;
   previousKm: number;
   currentKm: number;
   previousDate: string;
@@ -43,9 +43,9 @@ function daysBetween(earlierIso: string, laterIso: string): number {
  * de chegada dos registros (defensivo contra fontes de dados mal ordenadas).
  */
 export function detectOdometerAnomalies(
-  records: readonly ServiceRecord[],
+  events: readonly VehicleEvent[],
 ): AnomalyFlag[] {
-  const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
   const flags: AnomalyFlag[] = [];
 
   for (let i = 1; i < sorted.length; i++) {
@@ -76,13 +76,13 @@ export function detectOdometerAnomalies(
 
 function buildFlag(
   type: AnomalyType,
-  prev: ServiceRecord,
-  curr: ServiceRecord,
+  prev: VehicleEvent,
+  curr: VehicleEvent,
 ): AnomalyFlag {
   return {
     type,
-    recordId: curr.id,
-    previousRecordId: prev.id,
+    eventId: curr.id,
+    previousEventId: prev.id,
     previousKm: prev.odometerKm,
     currentKm: curr.odometerKm,
     previousDate: prev.date,

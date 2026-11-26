@@ -1,4 +1,4 @@
-import type { ServiceRecord } from "./types";
+import type { VehicleEvent } from "./types";
 
 /**
  * Estatísticas de quilometragem para o resumo do relatório — a primeira
@@ -26,13 +26,13 @@ const MS_PER_YEAR = 365.25 * 86_400_000;
 const AVERAGE_TOLERANCE = 0.25;
 
 export function summarizeMileage(
-  records: readonly ServiceRecord[],
+  events: readonly VehicleEvent[],
 ): MileageSummary | null {
-  if (records.length === 0) {
+  if (events.length === 0) {
     return null;
   }
 
-  const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
   const first = sorted[0];
   const last = sorted[sorted.length - 1];
   const currentKm = last.odometerKm;

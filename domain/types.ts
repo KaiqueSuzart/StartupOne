@@ -88,7 +88,7 @@ export interface ServiceEvidence {
   photoReading?: "match" | "mismatch" | "unreadable";
 }
 
-export interface ServiceRecord {
+export interface VehicleEvent {
   id: string;
   /** Data ISO "YYYY-MM-DD" em que o serviço foi DECLARADO como realizado. */
   date: string;
@@ -134,6 +134,6 @@ export interface RecallNotice {
 export interface VehicleHistory {
   vehicle: Vehicle;
   /** O repositório garante ordenação ascendente por data. */
-  records: ServiceRecord[];
+  events: VehicleEvent[];
   recalls: RecallNotice[];
 }

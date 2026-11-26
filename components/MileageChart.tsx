@@ -1,9 +1,9 @@
-import type { ServiceRecord } from "@/domain/types";
+import type { VehicleEvent } from "@/domain/types";
 import { formatDateBR, formatKm } from "@/lib/format";
 import { buildChartModel } from "@/lib/chart";
 
 interface MileageChartProps {
-  records: ServiceRecord[];
+  events: VehicleEvent[];
   flaggedIds: ReadonlySet<string>;
 }
 
@@ -13,12 +13,12 @@ interface MileageChartProps {
  * O ponto suspeito é marcado por FORMA (losango) e rótulo direto além da cor —
  * vermelho e verde ficam a ΔE 6.6 sob deuteranopia, insuficiente sozinho.
  */
-export function MileageChart({ records, flaggedIds }: MileageChartProps) {
-  if (records.length < 2) {
+export function MileageChart({ events, flaggedIds }: MileageChartProps) {
+  if (events.length < 2) {
     return null;
   }
 
-  const model = buildChartModel(records, flaggedIds);
+  const model = buildChartModel(events, flaggedIds);
   const { width, height, points, segments, yTicks, xTicks, plot } = model;
   const last = points[points.length - 1];
 

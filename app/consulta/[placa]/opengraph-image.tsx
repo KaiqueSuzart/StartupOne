@@ -132,7 +132,7 @@ export default async function Image({
                   color: "#475569",
                 }}
               >
-                {`${km} · ${result.history.records.length} registros`}
+                {`${km} · ${result.history.events.length} registros`}
               </div>
             )}
           </div>

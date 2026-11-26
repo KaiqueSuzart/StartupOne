@@ -1,4 +1,4 @@
-import type { ServiceRecord } from "./types";
+import type { VehicleEvent } from "./types";
 
 /**
  * Quanto da vida do veículo o histórico realmente cobre. É a contraparte
@@ -17,7 +17,7 @@ export interface CoverageSummary {
   percentage: number;
   /** Registros com nota fiscal e foto anexadas. */
   withEvidence: number;
-  totalRecords: number;
+  totalEvents: number;
   /** Anos civis sem nenhum registro, do mais antigo ao mais recente. */
   uncoveredYears: number[];
 }
@@ -27,19 +27,19 @@ const EMPTY: CoverageSummary = {
   documentedYears: 0,
   percentage: 0,
   withEvidence: 0,
-  totalRecords: 0,
+  totalEvents: 0,
   uncoveredYears: [],
 };
 
 export function summarizeCoverage(
-  records: readonly ServiceRecord[],
+  events: readonly VehicleEvent[],
   today: string,
 ): CoverageSummary {
-  if (records.length === 0) {
+  if (events.length === 0) {
     return EMPTY;
   }
 
-  const years = records.map((record) => Number(record.date.slice(0, 4)));
+  const years = events.map((event) => Number(event.date.slice(0, 4)));
   const firstYear = Math.min(...years);
   const currentYear = Number(today.slice(0, 4));
   // O ano do primeiro registro conta como coberto, então o span é inclusivo.
@@ -57,9 +57,9 @@ export function summarizeCoverage(
     vehicleYears,
     documentedYears: documented.size,
     percentage: Math.round((documented.size / vehicleYears) * 100),
-    withEvidence: records.filter((record) => record.evidence !== undefined)
+    withEvidence: events.filter((event) => event.evidence !== undefined)
       .length,
-    totalRecords: records.length,
+    totalEvents: events.length,
     uncoveredYears,
   };
 }

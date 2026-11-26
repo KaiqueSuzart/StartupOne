@@ -1,5 +1,5 @@
 import type { LedgerEntry } from "@/domain/ledger";
-import type { ServiceRecord } from "@/domain/types";
+import type { VehicleEvent } from "@/domain/types";
 import {
   ATTESTOR_LABELS,
   formatDateBR,
@@ -12,26 +12,26 @@ import { ServiceIcon } from "./ServiceIcon";
 import { VerifiedSeal } from "./VerifiedSeal";
 
 interface TimelineItemProps {
-  record: ServiceRecord;
+  event: VehicleEvent;
   anomalous: boolean;
   backdated: boolean;
   ledgerEntry: LedgerEntry | undefined;
 }
 
 /** Concessionária e vistoria têm peso de confiança maior que oficina/dono. */
-const HIGH_TRUST: ReadonlySet<ServiceRecord["attestor"]> = new Set([
+const HIGH_TRUST: ReadonlySet<VehicleEvent["attestor"]> = new Set([
   "dealership",
   "authorized_service",
   "inspection",
 ]);
 
 export function TimelineItem({
-  record,
+  event,
   anomalous,
   backdated,
   ledgerEntry,
 }: TimelineItemProps) {
-  const trusted = HIGH_TRUST.has(record.attestor);
+  const trusted = HIGH_TRUST.has(event.attestor);
 
   return (
     <li className="relative">
@@ -41,24 +41,24 @@ export function TimelineItem({
           anomalous ? "bg-red-600" : "bg-slate-900"
         }`}
       >
-        <ServiceIcon type={record.serviceType} className="h-4 w-4 fill-white" />
+        <ServiceIcon type={event.serviceType} className="h-4 w-4 fill-white" />
       </span>
       <article
         className={`card p-5 ${anomalous ? "border-red-300 ring-2 ring-red-100" : ""}`}
       >
         <header className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <h3 className="font-semibold text-slate-900">
-            {SERVICE_TYPE_LABELS[record.serviceType]}
+            {SERVICE_TYPE_LABELS[event.serviceType]}
           </h3>
-          <time dateTime={record.date} className="text-sm text-slate-500">
-            {formatDateBR(record.date)}
+          <time dateTime={event.date} className="text-sm text-slate-500">
+            {formatDateBR(event.date)}
           </time>
           <span
             className={`ml-auto font-mono text-base font-bold [font-variant-numeric:tabular-nums] ${
               anomalous ? "text-red-700" : "text-slate-900"
             }`}
           >
-            {formatKm(record.odometerKm)}
+            {formatKm(event.odometerKm)}
           </span>
         </header>
 
@@ -77,11 +77,11 @@ export function TimelineItem({
           </div>
         )}
 
-        <p className="mt-2 text-sm text-slate-600">{record.description}</p>
+        <p className="mt-2 text-sm text-slate-600">{event.description}</p>
 
-        {record.items !== undefined && record.items.length > 0 && (
+        {event.items !== undefined && event.items.length > 0 && (
           <ul className="mt-2 flex flex-wrap gap-1.5">
-            {record.items.map((item) => (
+            {event.items.map((item) => (
               <li
                 key={item}
                 className="rounded-md bg-slate-100 px-2 py-0.5 text-xs text-slate-700"
@@ -92,14 +92,14 @@ export function TimelineItem({
           </ul>
         )}
 
-        {record.nextServiceKm !== undefined && (
+        {event.nextServiceKm !== undefined && (
           <p className="mt-2 text-xs text-slate-500">
-            Próxima revisão prevista: {formatKm(record.nextServiceKm)}
+            Próxima revisão prevista: {formatKm(event.nextServiceKm)}
           </p>
         )}
 
-        {record.evidence !== undefined && (
-          <ServiceEvidenceRow evidence={record.evidence} />
+        {event.evidence !== undefined && (
+          <ServiceEvidenceRow evidence={event.evidence} />
         )}
 
         <footer className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
@@ -110,9 +110,9 @@ export function TimelineItem({
                 : "bg-slate-50 text-slate-600 ring-slate-200"
             }`}
           >
-            {ATTESTOR_LABELS[record.attestor]}
+            {ATTESTOR_LABELS[event.attestor]}
           </span>
-          <span className="text-xs text-slate-500">{record.workshop}</span>
+          <span className="text-xs text-slate-500">{event.workshop}</span>
           <span className="ml-auto">
             <VerifiedSeal />
           </span>
@@ -121,7 +121,7 @@ export function TimelineItem({
         {ledgerEntry !== undefined && (
           <details className="mt-2 print:hidden">
             <summary className="cursor-pointer text-xs text-slate-400 transition-colors hover:text-slate-600">
-              Registrado em {formatDateBR(record.recordedAt)} · elo #
+              Registrado em {formatDateBR(event.recordedAt)} · elo #
               {ledgerEntry.index + 1} da cadeia
             </summary>
             <p className="mt-1 break-all font-mono text-[11px] leading-relaxed text-slate-400">

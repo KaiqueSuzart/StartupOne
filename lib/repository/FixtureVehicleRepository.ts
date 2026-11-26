@@ -22,7 +22,7 @@ function loadValidatedFixtures(): VehicleHistory[] {
   if (cache === null) {
     cache = [cleanJson, richJson, rollbackJson].map((raw) => {
       const history = vehicleHistorySchema.parse(raw);
-      history.records.sort((a, b) => a.date.localeCompare(b.date));
+      history.events.sort((a, b) => a.date.localeCompare(b.date));
       return history;
     });
   }
