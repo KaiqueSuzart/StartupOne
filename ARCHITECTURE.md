@@ -115,8 +115,13 @@ produzem exatamente o mesmo `VehicleHistory`. O esquema já reflete a tese do pr
 RLS libera apenas `SELECT`, sem policy de `UPDATE`/`DELETE`, tornando o histórico
 append-only para qualquer cliente.
 
-Regras para qualquer implementação: devolver só dados validados por Zod, registros
-ordenados por data ascendente, e receber identificadores já normalizados.
+Regras para qualquer implementação: devolver só dados validados por Zod, eventos
+(`VehicleHistory.events`) ordenados por data ascendente, e receber identificadores já
+normalizados.
+
+Os arquivos de `data/vehicles` declaram o formato em que foram escritos
+(`schemaVersion`, hoje 2). O repositório de fixtures recusa arquivo sem versão ou de
+versão diferente; a versão é do arquivo e não chega ao domínio.
 
 ## Domínio puro
 
@@ -141,6 +146,8 @@ testadas em `tests/`:
 - `integrity.ts` — integridade da linha do tempo: registro retroativo
   (`recordedAt` muito posterior a `date`), serviço declarado para depois do
   próprio registro, e lacunas acima de 24 meses.
+- `calendarDay.ts` — dia civil de Brasília de um instante. É o que permite
+  comparar o carimbo de entrada, que tem hora, com a data declarada do serviço.
 - `ledger.ts` — encadeamento de hashes (cada registro depende do anterior).
   **Simulação didática com FNV-1a**, rotulada como tal na UI; a fase on-chain
   usará hash criptográfico e ancoragem real.
@@ -154,9 +161,17 @@ Por isso a cadeia de hashes segue a ordem de `recordedAt` (ordem de entrada),
 enquanto a linha do tempo exibe a ordem de `date`: um registro retroativo
 aparece no meio da timeline mas no fim da cadeia, e isso fica visível.
 
+As duas têm formatos diferentes de propósito. `date` é um dia civil
+(`YYYY-MM-DD`), porque é o que a oficina declara. `recordedAt` é um instante
+ISO 8601 completo, com hora e offset, porque é o que o servidor carimba. As
+regras de integridade comparam as duas pelo dia civil de Brasília: um evento
+gravado às 22h chega do banco como 01h do dia seguinte em UTC, e nem por isso
+é retroativo ou futuro. A cadeia ordena pelo instante e usa a forma canônica
+dele no hash, para o elo não depender do offset em que a fonte escreveu.
+
 ## Confiança da fonte
 
-Cada `ServiceRecord` carrega um `attestor` (concessionária, rede autorizada,
+Cada `VehicleEvent` carrega um `attestor` (concessionária, rede autorizada,
 oficina independente, vistoria, proprietário). A UI exibe a procedência porque a
 confiança do relatório depende de quem atestou, não só do conteúdo — é a base do
 modelo multi-atestador (com assinatura por fonte) previsto para a fase 2.
