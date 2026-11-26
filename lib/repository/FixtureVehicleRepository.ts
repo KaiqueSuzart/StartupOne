@@ -1,7 +1,7 @@
 import cleanJson from "@/data/vehicles/clean.json";
 import richJson from "@/data/vehicles/rich.json";
 import rollbackJson from "@/data/vehicles/rollback.json";
-import { vehicleHistorySchema } from "@/lib/schema";
+import { vehicleFixtureSchema } from "@/lib/schema";
 import type { VehicleHistory } from "@/domain/types";
 import type { VehicleRepository } from "./VehicleRepository";
 
@@ -21,9 +21,10 @@ let cache: VehicleHistory[] | null = null;
 function loadValidatedFixtures(): VehicleHistory[] {
   if (cache === null) {
     cache = [cleanJson, richJson, rollbackJson].map((raw) => {
-      const history = vehicleHistorySchema.parse(raw);
-      history.events.sort((a, b) => a.date.localeCompare(b.date));
-      return history;
+      // A versão do formato é conferida aqui e não segue para o domínio.
+      const { vehicle, events, recalls } = vehicleFixtureSchema.parse(raw);
+      events.sort((a, b) => a.date.localeCompare(b.date));
+      return { vehicle, events, recalls };
     });
   }
   return cache;

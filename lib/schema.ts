@@ -95,6 +95,18 @@ export const vehicleHistorySchema = z.object({
   recalls: z.array(recallNoticeSchema),
 });
 
+/**
+ * Formato dos arquivos de `data/vehicles`. A versão 2 trocou `records` por
+ * `events` e passou `recordedAt` a instante completo. A versão é do arquivo,
+ * não do domínio: um fixture antigo é recusado inteiro em vez de ser lido pela
+ * metade.
+ */
+export const FIXTURE_SCHEMA_VERSION = 2;
+
+export const vehicleFixtureSchema = vehicleHistorySchema.extend({
+  schemaVersion: z.literal(FIXTURE_SCHEMA_VERSION),
+});
+
 // Garantia em tempo de compilação de que o schema produz exatamente o tipo
 // do domínio — se um dos lados mudar, o build quebra aqui.
 type SchemaOutput = z.infer<typeof vehicleHistorySchema>;
