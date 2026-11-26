@@ -39,7 +39,9 @@ function serialize(event: VehicleEvent): string {
   return [
     event.id,
     event.date,
-    event.recordedAt,
+    // Forma canônica do instante: o mesmo carimbo chega com offsets
+    // diferentes conforme a fonte, e o elo não pode depender da grafia.
+    new Date(event.recordedAt).toISOString(),
     String(event.odometerKm),
     event.workshop,
     event.attestor,
@@ -52,14 +54,17 @@ function serialize(event: VehicleEvent): string {
  * ordem dos serviços: um histórico append-only encadeia o que chega, quando
  * chega. Por isso um registro retroativo aparece no meio da linha do tempo mas
  * no fim da cadeia — e não há como reordená-lo sem quebrar os hashes.
- * Empates são desfeitos pelo id para manter a função determinística.
+ * A ordem é a do instante, não a do texto: carimbos com offsets diferentes
+ * não se ordenam alfabeticamente. Empates são desfeitos pelo id para manter a
+ * função determinística.
  */
 export function buildLedgerChain(
   events: readonly VehicleEvent[],
 ): LedgerEntry[] {
   const sorted = [...events].sort(
     (a, b) =>
-      a.recordedAt.localeCompare(b.recordedAt) || a.id.localeCompare(b.id),
+      Date.parse(a.recordedAt) - Date.parse(b.recordedAt) ||
+      a.id.localeCompare(b.id),
   );
   const chain: LedgerEntry[] = [];
   let previousHash = GENESIS_HASH;

@@ -3,6 +3,7 @@ import type { VehicleEvent } from "@/domain/types";
 import {
   ATTESTOR_LABELS,
   formatDateBR,
+  formatInstantBR,
   formatKm,
   SERVICE_ITEM_LABELS,
   SERVICE_TYPE_LABELS,
@@ -121,7 +122,7 @@ export function TimelineItem({
         {ledgerEntry !== undefined && (
           <details className="mt-2 print:hidden">
             <summary className="cursor-pointer text-xs text-slate-400 transition-colors hover:text-slate-600">
-              Registrado em {formatDateBR(event.recordedAt)} · elo #
+              Registrado em {formatInstantBR(event.recordedAt)} · elo #
               {ledgerEntry.index + 1} da cadeia
             </summary>
             <p className="mt-1 break-all font-mono text-[11px] leading-relaxed text-slate-400">

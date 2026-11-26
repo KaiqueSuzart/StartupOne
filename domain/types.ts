@@ -93,9 +93,11 @@ export interface VehicleEvent {
   /** Data ISO "YYYY-MM-DD" em que o serviço foi DECLARADO como realizado. */
   date: string;
   /**
-   * Data ISO em que o registro entrou no histórico. Separar as duas datas é o
-   * que torna o backdating visível: num histórico append-only ninguém pode
-   * alterar o carimbo de entrada, só declarar uma data de serviço anterior.
+   * Instante ISO 8601 completo (data, hora e offset) em que o evento entrou
+   * no histórico. Separar as duas datas é o que torna o backdating visível:
+   * num histórico append-only ninguém pode alterar o carimbo de entrada, só
+   * declarar uma data de serviço anterior. As regras comparam as duas pelo
+   * dia civil de Brasília (`domain/calendarDay.ts`).
    */
   recordedAt: string;
   odometerKm: number;

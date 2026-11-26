@@ -10,7 +10,7 @@ function event(
   return {
     id,
     date,
-    recordedAt: date,
+    recordedAt: `${date}T10:00:00-03:00`,
     odometerKm: 10000,
     workshop: "Origem de teste",
     attestor: "independent_workshop",

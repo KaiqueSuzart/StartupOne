@@ -11,6 +11,7 @@ export interface WorkshopRecordSummary {
   plate: string;
   vehicleLabel: string;
   serviceDate: string;
+  /** Instante ISO 8601 completo, como em `VehicleEvent.recordedAt`. */
   recordedAt: string;
   odometerKm: number;
   serviceType: ServiceType;

@@ -43,13 +43,24 @@ export interface VehicleRow {
   recalls: RecallRow[];
 }
 
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * No esquema atual `recorded_at` é `date`; no modelo v2 passa a `timestamptz`.
+ * Um dia sem hora vira o meio-dia de Brasília, instante que cai no mesmo dia
+ * civil em qualquer fuso em que for lido. O carimbo completo passa intacto.
+ */
+export function toRecordedAt(value: string): string {
+  return DATE_ONLY.test(value) ? `${value}T12:00:00-03:00` : value;
+}
+
 export function toVehicleHistory(row: VehicleRow): unknown {
   const events = [...row.service_records]
     .sort((a, b) => a.service_date.localeCompare(b.service_date))
     .map((record) => ({
       id: record.id,
       date: record.service_date,
-      recordedAt: record.recorded_at,
+      recordedAt: toRecordedAt(record.recorded_at),
       odometerKm: record.odometer_km,
       workshop: record.workshop,
       attestor: record.attestor,

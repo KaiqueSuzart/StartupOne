@@ -11,7 +11,7 @@
     {
       "id": "rb-001",
       "date": "2015-04-08",
-      "recordedAt": "2015-04-08",
+      "recordedAt": "2015-04-08T09:14:00-03:00",
       "odometerKm": 0,
       "workshop": "Concessionária Rota Renault",
       "attestor": "dealership",
@@ -21,7 +21,7 @@
     {
       "id": "rb-002",
       "date": "2017-05-19",
-      "recordedAt": "2017-05-19",
+      "recordedAt": "2017-05-19T10:42:00-03:00",
       "odometerKm": 30150,
       "workshop": "Concessionária Rota Renault",
       "attestor": "dealership",
@@ -35,7 +35,7 @@
     {
       "id": "rb-003",
       "date": "2019-06-27",
-      "recordedAt": "2019-06-27",
+      "recordedAt": "2019-06-27T14:07:00-03:00",
       "odometerKm": 61300,
       "workshop": "Oficina do Bairro",
       "attestor": "independent_workshop",
@@ -50,7 +50,7 @@
     {
       "id": "rb-004",
       "date": "2021-03-12",
-      "recordedAt": "2021-03-12",
+      "recordedAt": "2021-03-12T16:35:00-03:00",
       "odometerKm": 88500,
       "workshop": "Oficina do Bairro",
       "attestor": "independent_workshop",
@@ -63,7 +63,7 @@
     {
       "id": "rb-transfer-1",
       "date": "2021-06-20",
-      "recordedAt": "2021-06-21",
+      "recordedAt": "2021-06-21T11:26:00-03:00",
       "odometerKm": 90100,
       "workshop": "Detran-MG · Vistoria de transferência",
       "attestor": "registry",
@@ -73,7 +73,7 @@
     {
       "id": "rb-005",
       "date": "2022-08-04",
-      "recordedAt": "2023-06-10",
+      "recordedAt": "2023-06-10T15:51:00-03:00",
       "odometerKm": 52000,
       "workshop": "Auto Center Estrada Real",
       "attestor": "independent_workshop",
@@ -86,7 +86,7 @@
     {
       "id": "rb-006",
       "date": "2023-02-15",
-      "recordedAt": "2023-02-16",
+      "recordedAt": "2023-02-16T08:58:00-03:00",
       "odometerKm": 58600,
       "workshop": "Auto Center Estrada Real",
       "attestor": "independent_workshop",
@@ -101,7 +101,7 @@
     {
       "id": "rb-transfer-2",
       "date": "2023-03-01",
-      "recordedAt": "2023-03-02",
+      "recordedAt": "2023-03-02T13:23:00-03:00",
       "odometerKm": 59000,
       "workshop": "Detran-MG · Vistoria de transferência",
       "attestor": "registry",

@@ -8,7 +8,7 @@ function event(id: string, date: string, withEvidence = false): VehicleEvent {
   return {
     id,
     date,
-    recordedAt: date,
+    recordedAt: `${date}T10:00:00-03:00`,
     odometerKm: 10000,
     workshop: "Oficina Teste",
     attestor: "independent_workshop",

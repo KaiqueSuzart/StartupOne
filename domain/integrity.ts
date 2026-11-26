@@ -1,3 +1,4 @@
+import { toBrasiliaDay } from "./calendarDay";
 import type { VehicleEvent } from "./types";
 
 /**
@@ -56,7 +57,9 @@ export function detectIntegrityIssues(
   const issues: IntegrityIssue[] = [];
 
   for (const event of sorted) {
-    const delayDays = daysBetween(event.date, event.recordedAt);
+    // O carimbo tem hora, mas a regra é por dia: o horário em que o evento
+    // foi gravado não pode torná-lo retroativo nem futuro.
+    const delayDays = daysBetween(event.date, toBrasiliaDay(event.recordedAt));
 
     if (delayDays < 0) {
       // Serviço declarado para depois do próprio registro: impossível.

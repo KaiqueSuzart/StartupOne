@@ -12,6 +12,10 @@ const isoDateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "data deve estar no formato YYYY-MM-DD");
 
+// Carimbo de entrada: instante completo com offset explícito. Sem offset o
+// mesmo texto valeria horas diferentes conforme o fuso de quem lê.
+const isoInstantSchema = z.iso.datetime({ offset: true });
+
 export const serviceItemSchema = z.enum([
   "oil_and_filter",
   "air_filter",
@@ -38,7 +42,7 @@ const serviceEvidenceSchema = z.object({
 export const vehicleEventSchema = z.object({
   id: z.string().min(1),
   date: isoDateSchema,
-  recordedAt: isoDateSchema,
+  recordedAt: isoInstantSchema,
   odometerKm: z.number().int().min(0),
   workshop: z.string().min(1),
   attestor: z.enum([

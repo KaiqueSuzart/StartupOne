@@ -11,7 +11,7 @@
     {
       "id": "clean-001",
       "date": "2023-03-10",
-      "recordedAt": "2023-03-10",
+      "recordedAt": "2023-03-10T09:14:00-03:00",
       "odometerKm": 0,
       "workshop": "Concessionária AutoPrime VW",
       "attestor": "dealership",
@@ -21,7 +21,7 @@
     {
       "id": "clean-002",
       "date": "2024-03-05",
-      "recordedAt": "2024-03-05",
+      "recordedAt": "2024-03-05T10:42:00-03:00",
       "odometerKm": 10240,
       "workshop": "Concessionária AutoPrime VW",
       "attestor": "dealership",
@@ -35,7 +35,7 @@
     {
       "id": "clean-003",
       "date": "2025-02-20",
-      "recordedAt": "2025-02-21",
+      "recordedAt": "2025-02-21T14:07:00-03:00",
       "odometerKm": 20180,
       "workshop": "Oficina Roda Viva",
       "attestor": "independent_workshop",
