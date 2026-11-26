@@ -1,5 +1,5 @@
 import type { IntegrityIssue } from "@/domain/integrity";
-import { formatDateBR } from "@/lib/format";
+import { formatDateBR, formatInstantBR } from "@/lib/format";
 
 interface HistoryNoticesProps {
   issues: IntegrityIssue[];
@@ -11,13 +11,13 @@ function describe(issue: IntegrityIssue): string {
     case "future_service_date":
       return `Um registro declara serviço em ${formatDateBR(
         issue.serviceDate,
-      )}, data posterior ao próprio registro (${formatDateBR(
+      )}, data posterior ao próprio registro (${formatInstantBR(
         issue.recordedAt,
       )}).`;
-    case "backdated_record":
+    case "backdated_event":
       return `Serviço declarado em ${formatDateBR(
         issue.serviceDate,
-      )} só entrou no histórico em ${formatDateBR(issue.recordedAt)} — ${
+      )} só entrou no histórico em ${formatInstantBR(issue.recordedAt)} — ${
         issue.delayDays
       } dias depois.`;
     case "history_gap":
@@ -38,7 +38,7 @@ export function HistoryNotices({ issues }: HistoryNoticesProps) {
       <ul className="mt-3 space-y-2.5">
         {issues.map((issue, index) => (
           <li
-            key={`${issue.type}-${issue.recordId}-${index}`}
+            key={`${issue.type}-${issue.eventId}-${index}`}
             className="flex items-start gap-3 text-sm"
           >
             <span

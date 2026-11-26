@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ServiceType } from "@/domain/types";
+import { toRecordedAt } from "./supabaseMapper";
 import type {
   WorkshopRecordsReader,
   WorkshopRecordSummary,
@@ -38,7 +39,7 @@ function toSummary(row: Row): WorkshopRecordSummary {
         ? ""
         : `${row.vehicles.make} ${row.vehicles.model} ${row.vehicles.model_year}`,
     serviceDate: row.service_date,
-    recordedAt: row.recorded_at,
+    recordedAt: toRecordedAt(row.recorded_at),
     odometerKm: row.odometer_km,
     serviceType: row.service_type as ServiceType,
     nfeKey: row.nfe_key ?? "",

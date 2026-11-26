@@ -7,7 +7,7 @@ import { PlateBadge } from "./PlateBadge";
 
 interface VehicleSummaryCardProps {
   vehicle: Vehicle;
-  recordCount: number;
+  eventCount: number;
   mileage: MileageSummary | null;
   ownership: OwnershipSummary;
 }
@@ -53,7 +53,7 @@ function Stat({
 
 export function VehicleSummaryCard({
   vehicle,
-  recordCount,
+  eventCount,
   mileage,
   ownership,
 }: VehicleSummaryCardProps) {
@@ -95,7 +95,7 @@ export function VehicleSummaryCard({
           value={String(ownership.ownerCount)}
           hint={ownerHint}
         />
-        <Stat label="Registros" value={String(recordCount)} />
+        <Stat label="Registros" value={String(eventCount)} />
         {/* Identificador sensível: exibido sempre mascarado. */}
         <Stat label="Chassi (VIN)" value={maskVin(vehicle.vin)} mono />
       </dl>

@@ -1,4 +1,4 @@
-import type { ServiceRecord } from "./types";
+import type { VehicleEvent } from "./types";
 
 /**
  * Quantos donos o veículo teve — a pergunta que vem logo depois do km na
@@ -17,9 +17,9 @@ export interface OwnershipSummary {
 const MS_PER_YEAR = 365.25 * 86_400_000;
 
 export function summarizeOwnership(
-  records: readonly ServiceRecord[],
+  events: readonly VehicleEvent[],
 ): OwnershipSummary {
-  if (records.length === 0) {
+  if (events.length === 0) {
     return {
       ownerCount: 0,
       transfers: 0,
@@ -28,9 +28,9 @@ export function summarizeOwnership(
     };
   }
 
-  const sorted = [...records].sort((a, b) => a.date.localeCompare(b.date));
+  const sorted = [...events].sort((a, b) => a.date.localeCompare(b.date));
   const transfers = sorted.filter(
-    (record) => record.serviceType === "ownership_transfer",
+    (event) => event.serviceType === "ownership_transfer",
   );
 
   // O primeiro dono não gera evento de transferência: ele já está lá desde o

@@ -35,7 +35,7 @@ export default async function ReciboPage({ params }: ReciboPageProps) {
   const entry =
     history === null
       ? undefined
-      : buildLedgerChain(history.records).find((e) => e.recordId === record.id);
+      : buildLedgerChain(history.events).find((e) => e.eventId === record.id);
 
   return (
     <div className="mx-auto max-w-2xl">

@@ -6,8 +6,8 @@ import { summarizeVerdict } from "@/domain/verdict";
 
 const anomaly: AnomalyFlag = {
   type: "odometer_rollback",
-  recordId: "b",
-  previousRecordId: "a",
+  eventId: "b",
+  previousEventId: "a",
   previousKm: 88500,
   currentKm: 52000,
   previousDate: "2021-03-12",
@@ -17,17 +17,17 @@ const anomaly: AnomalyFlag = {
 const gap: IntegrityIssue = {
   type: "history_gap",
   severity: "notice",
-  recordId: "b",
-  previousRecordId: "a",
+  eventId: "b",
+  previousEventId: "a",
   previousDate: "2015-04-08",
   currentDate: "2017-05-19",
   gapMonths: 25,
 };
 
 const backdated: IntegrityIssue = {
-  type: "backdated_record",
+  type: "backdated_event",
   severity: "alert",
-  recordId: "c",
+  eventId: "c",
   serviceDate: "2022-08-04",
   recordedAt: "2023-06-10",
   delayDays: 310,

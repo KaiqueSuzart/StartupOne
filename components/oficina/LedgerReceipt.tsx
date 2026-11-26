@@ -1,5 +1,5 @@
 import type { LedgerEntry } from "@/domain/ledger";
-import { formatDateBR, maskNfeKey } from "@/lib/format";
+import { formatInstantBR, maskNfeKey } from "@/lib/format";
 import type { WorkshopRecordSummary } from "@/lib/repository";
 
 interface LedgerReceiptProps {
@@ -26,7 +26,7 @@ export function LedgerReceipt({ record, entry }: LedgerReceiptProps) {
       <div className="flex flex-wrap items-center gap-x-3 py-3">
         <dt className="text-sm text-slate-500">Registrado em</dt>
         <dd className="ml-auto text-sm text-slate-900">
-          {formatDateBR(record.recordedAt)}
+          {formatInstantBR(record.recordedAt)}
         </dd>
       </div>
       {record.nfeKey !== "" && (

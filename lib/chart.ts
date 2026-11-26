@@ -1,4 +1,4 @@
-import type { ServiceRecord } from "@/domain/types";
+import type { VehicleEvent } from "@/domain/types";
 import { formatKm } from "./format";
 
 /**
@@ -61,28 +61,30 @@ function anchorFor(x: number): LabelAnchor {
 }
 
 export function buildChartModel(
-  records: readonly ServiceRecord[],
+  events: readonly VehicleEvent[],
   flaggedIds: ReadonlySet<string>,
 ) {
-  const times = records.map((r) => Date.parse(r.date));
+  const times = events.map((event) => Date.parse(event.date));
   const minTime = Math.min(...times);
   const spanTime = Math.max(Math.max(...times) - minTime, 1);
-  const topKm = niceCeiling(Math.max(...records.map((r) => r.odometerKm)));
+  const topKm = niceCeiling(
+    Math.max(...events.map((event) => event.odometerKm)),
+  );
 
   const innerWidth = WIDTH - PLOT.left - PLOT.right;
   const innerHeight = HEIGHT - PLOT.top - PLOT.bottom;
 
-  const points: ChartPoint[] = records.map((record, index) => {
-    const previousKm = index > 0 ? records[index - 1].odometerKm : 0;
-    const delta = record.odometerKm - previousKm;
+  const points: ChartPoint[] = events.map((event, index) => {
+    const previousKm = index > 0 ? events[index - 1].odometerKm : 0;
+    const delta = event.odometerKm - previousKm;
     const x = PLOT.left + ((times[index] - minTime) / spanTime) * innerWidth;
     return {
-      id: record.id,
-      date: record.date,
-      km: record.odometerKm,
+      id: event.id,
+      date: event.date,
+      km: event.odometerKm,
       x,
-      y: PLOT.top + innerHeight - (record.odometerKm / topKm) * innerHeight,
-      flagged: flaggedIds.has(record.id),
+      y: PLOT.top + innerHeight - (event.odometerKm / topKm) * innerHeight,
+      flagged: flaggedIds.has(event.id),
       deltaLabel: `${delta < 0 ? "−" : "+"}${formatKm(Math.abs(delta))}`,
       anchor: anchorFor(x),
     };

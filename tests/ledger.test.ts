@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { buildLedgerChain, GENESIS_HASH } from "@/domain/ledger";
-import type { ServiceRecord } from "@/domain/types";
+import type { VehicleEvent } from "@/domain/types";
 
-function record(id: string, date: string, odometerKm: number): ServiceRecord {
+function event(id: string, date: string, odometerKm: number): VehicleEvent {
   return {
     id,
     date,
-    recordedAt: date,
+    recordedAt: `${date}T10:00:00-03:00`,
     odometerKm,
     workshop: "Oficina Teste",
     attestor: "independent_workshop",
@@ -15,10 +15,10 @@ function record(id: string, date: string, odometerKm: number): ServiceRecord {
   };
 }
 
-const records = [
-  record("a", "2020-01-01", 0),
-  record("b", "2021-01-01", 15000),
-  record("c", "2022-01-01", 31000),
+const events = [
+  event("a", "2020-01-01", 0),
+  event("b", "2021-01-01", 15000),
+  event("c", "2022-01-01", 31000),
 ];
 
 describe("buildLedgerChain", () => {
@@ -27,7 +27,7 @@ describe("buildLedgerChain", () => {
   });
 
   it("ancora o primeiro elo no hash de gênese e encadeia os seguintes", () => {
-    const chain = buildLedgerChain(records);
+    const chain = buildLedgerChain(events);
     expect(chain).toHaveLength(3);
     expect(chain[0].previousHash).toBe(GENESIS_HASH);
     expect(chain[1].previousHash).toBe(chain[0].hash);
@@ -35,16 +35,16 @@ describe("buildLedgerChain", () => {
   });
 
   it("é determinística e independe da ordem de entrada", () => {
-    const shuffled = [records[2], records[0], records[1]];
-    expect(buildLedgerChain(shuffled)).toEqual(buildLedgerChain(records));
+    const shuffled = [events[2], events[0], events[1]];
+    expect(buildLedgerChain(shuffled)).toEqual(buildLedgerChain(events));
   });
 
   it("adulterar um km no meio quebra todos os elos seguintes", () => {
-    const original = buildLedgerChain(records);
+    const original = buildLedgerChain(events);
     const tampered = buildLedgerChain([
-      records[0],
-      { ...records[1], odometerKm: 9000 },
-      records[2],
+      events[0],
+      { ...events[1], odometerKm: 9000 },
+      events[2],
     ]);
 
     expect(tampered[0].hash).toBe(original[0].hash);
@@ -53,14 +53,14 @@ describe("buildLedgerChain", () => {
   });
 
   it("encadeia na ordem de entrada, não na de serviço", () => {
-    const backdated: ServiceRecord = {
-      ...record("retroativo", "2020-06-01", 8000),
-      recordedAt: "2022-06-01",
+    const backdated: VehicleEvent = {
+      ...event("retroativo", "2020-06-01", 8000),
+      recordedAt: "2022-06-01T10:00:00-03:00",
     };
-    const chain = buildLedgerChain([records[0], backdated, records[1]]);
+    const chain = buildLedgerChain([events[0], backdated, events[1]]);
 
     // Serviço de 2020, mas registrado depois de tudo: último elo da cadeia.
-    expect(chain.map((entry) => entry.recordId)).toEqual([
+    expect(chain.map((entry) => entry.eventId)).toEqual([
       "a",
       "b",
       "retroativo",
@@ -68,8 +68,35 @@ describe("buildLedgerChain", () => {
     expect(chain[2].index).toBe(2);
   });
 
+  it("ordena pelo instante de entrada, não pelo texto do carimbo", () => {
+    // Em texto "…-01T23:30" vem antes de "…-02T01:00"; como instante é o
+    // contrário (02h30 UTC contra 01h00 UTC).
+    const later = {
+      ...event("depois", "2022-06-01", 1000),
+      recordedAt: "2022-06-01T23:30:00-03:00",
+    };
+    const earlier = {
+      ...event("antes", "2022-06-01", 1000),
+      recordedAt: "2022-06-02T01:00:00+00:00",
+    };
+    const chain = buildLedgerChain([later, earlier]);
+    expect(chain.map((entry) => entry.eventId)).toEqual(["antes", "depois"]);
+  });
+
+  it("o mesmo instante escrito em outro offset produz a mesma cadeia", () => {
+    const inBrasilia = events.map((e) => ({
+      ...e,
+      recordedAt: `${e.date}T10:00:00-03:00`,
+    }));
+    const inUtc = events.map((e) => ({
+      ...e,
+      recordedAt: `${e.date}T13:00:00.000000+00:00`,
+    }));
+    expect(buildLedgerChain(inUtc)).toEqual(buildLedgerChain(inBrasilia));
+  });
+
   it("produz hashes distintos para registros distintos", () => {
-    const hashes = buildLedgerChain(records).map((entry) => entry.hash);
+    const hashes = buildLedgerChain(events).map((entry) => entry.hash);
     expect(new Set(hashes).size).toBe(hashes.length);
   });
 });

@@ -1,9 +1,9 @@
 import type { LedgerEntry } from "@/domain/ledger";
-import type { ServiceRecord } from "@/domain/types";
+import type { VehicleEvent } from "@/domain/types";
 import { TimelineItem } from "./TimelineItem";
 
 interface TimelineProps {
-  records: ServiceRecord[];
+  events: VehicleEvent[];
   /** Ids dos registros sinalizados pela detecção de anomalia. */
   flaggedIds: ReadonlySet<string>;
   /** Ids dos registros que entraram no histórico muito depois do serviço. */
@@ -13,26 +13,26 @@ interface TimelineProps {
 
 /** Linha do tempo cronológica: do registro inicial à revisão mais recente. */
 export function Timeline({
-  records,
+  events,
   flaggedIds,
   backdatedIds,
   ledger,
 }: TimelineProps) {
-  const ledgerByRecord = new Map(ledger.map((entry) => [entry.recordId, entry]));
+  const ledgerByEvent = new Map(ledger.map((entry) => [entry.eventId, entry]));
 
   return (
     <section aria-label="Linha do tempo do veículo">
       <h2 className="section-title mb-4">
-        Linha do tempo · {records.length} registros
+        Linha do tempo · {events.length} registros
       </h2>
       <ol className="relative ml-[38px] space-y-4 border-l-2 border-slate-200 pl-6">
-        {records.map((record) => (
+        {events.map((event) => (
           <TimelineItem
-            key={record.id}
-            record={record}
-            anomalous={flaggedIds.has(record.id)}
-            backdated={backdatedIds.has(record.id)}
-            ledgerEntry={ledgerByRecord.get(record.id)}
+            key={event.id}
+            event={event}
+            anomalous={flaggedIds.has(event.id)}
+            backdated={backdatedIds.has(event.id)}
+            ledgerEntry={ledgerByEvent.get(event.id)}
           />
         ))}
       </ol>

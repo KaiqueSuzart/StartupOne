@@ -7,7 +7,7 @@ import type { VehicleHistory } from "@/domain/types";
  * Contrato para implementações:
  * - Devolver apenas dados validados pelos schemas de `lib/schema.ts`
  *   (nunca repassar dado externo cru).
- * - Devolver `records` ordenados por data ascendente.
+ * - Devolver `events` ordenados por data ascendente.
  * - Receber placa/VIN já normalizados (`normalizeIdentifier`).
  */
 export interface VehicleRepository {

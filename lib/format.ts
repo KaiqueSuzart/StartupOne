@@ -15,6 +15,17 @@ export function formatDateBR(isoDate: string): string {
   return dateFormatter.format(new Date(`${isoDate}T00:00:00Z`));
 }
 
+// Carimbos de entrada são instantes: o dia exibido é o do calendário de
+// Brasília, seja qual for o offset em que a fonte devolveu o valor.
+const instantFormatter = new Intl.DateTimeFormat("pt-BR", {
+  dateStyle: "long",
+  timeZone: "America/Sao_Paulo",
+});
+
+export function formatInstantBR(isoInstant: string): string {
+  return instantFormatter.format(new Date(isoInstant));
+}
+
 export function formatKm(km: number): string {
   return `${numberFormatter.format(km)} km`;
 }

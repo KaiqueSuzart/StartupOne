@@ -79,8 +79,8 @@ export default async function RegistrarPage({
                   plate: history.vehicle.plate,
                   label: `${history.vehicle.make} ${history.vehicle.model} ${history.vehicle.modelYear}`,
                   lastKm:
-                    history.records.length > 0
-                      ? Math.max(...history.records.map((r) => r.odometerKm))
+                    history.events.length > 0
+                      ? Math.max(...history.events.map((e) => e.odometerKm))
                       : null,
                 }
           }

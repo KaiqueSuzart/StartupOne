@@ -1,20 +1,20 @@
 import { describe, expect, it } from "vitest";
 import { detectMaintenanceAlerts } from "@/domain/maintenance";
-import type { ServiceItem, ServiceRecord } from "@/domain/types";
+import type { ServiceItem, VehicleEvent } from "@/domain/types";
 
 const TODAY = "2026-07-27";
 
-function record(
+function event(
   id: string,
   date: string,
   odometerKm: number,
   items?: ServiceItem[],
   nextServiceKm?: number,
-): ServiceRecord {
+): VehicleEvent {
   return {
     id,
     date,
-    recordedAt: date,
+    recordedAt: `${date}T10:00:00-03:00`,
     odometerKm,
     workshop: "Oficina Teste",
     attestor: "independent_workshop",
@@ -33,8 +33,8 @@ describe("detectMaintenanceAlerts", () => {
   it("não alerta quando os itens estão em dia", () => {
     const alerts = detectMaintenanceAlerts(
       [
-        record("a", "2024-01-10", 20000, ["timing_belt"]),
-        record("b", "2025-06-10", 30000, ["brake_fluid"]),
+        event("a", "2024-01-10", 20000, ["timing_belt"]),
+        event("b", "2025-06-10", 30000, ["brake_fluid"]),
       ],
       TODAY,
     );
@@ -45,8 +45,8 @@ describe("detectMaintenanceAlerts", () => {
     // Fluido de freio: 24 meses. Trocado em 2022 → vencido em 2026.
     const alerts = detectMaintenanceAlerts(
       [
-        record("a", "2022-01-10", 20000, ["brake_fluid", "timing_belt"]),
-        record("b", "2026-01-10", 30000),
+        event("a", "2022-01-10", 20000, ["brake_fluid", "timing_belt"]),
+        event("b", "2026-01-10", 30000),
       ],
       TODAY,
     );
@@ -63,8 +63,8 @@ describe("detectMaintenanceAlerts", () => {
     // Velas: 40.000 km. Trocadas com 20.000, veículo com 75.000.
     const alerts = detectMaintenanceAlerts(
       [
-        record("a", "2025-01-10", 20000, ["spark_plugs", "brake_fluid"]),
-        record("b", "2026-06-10", 75000),
+        event("a", "2025-01-10", 20000, ["spark_plugs", "brake_fluid"]),
+        event("b", "2026-06-10", 75000),
       ],
       TODAY,
     );
@@ -75,7 +75,7 @@ describe("detectMaintenanceAlerts", () => {
 
   it("avisa ausência apenas dos itens críticos, e só em veículo antigo", () => {
     const alerts = detectMaintenanceAlerts(
-      [record("a", "2016-01-10", 90000), record("b", "2026-01-10", 120000)],
+      [event("a", "2016-01-10", 90000), event("b", "2026-01-10", 120000)],
       TODAY,
     );
     const missing = alerts.filter((a) => a.type === "never_recorded");
@@ -88,7 +88,7 @@ describe("detectMaintenanceAlerts", () => {
 
   it("não avisa ausência em veículo novo", () => {
     const alerts = detectMaintenanceAlerts(
-      [record("a", "2025-06-10", 5000), record("b", "2026-06-10", 12000)],
+      [event("a", "2025-06-10", 5000), event("b", "2026-06-10", 12000)],
       TODAY,
     );
     expect(alerts.filter((a) => a.type === "never_recorded")).toEqual([]);
@@ -97,8 +97,8 @@ describe("detectMaintenanceAlerts", () => {
   it("alerta revisão declarada e já vencida", () => {
     const alerts = detectMaintenanceAlerts(
       [
-        record("a", "2026-01-10", 30000, ["oil_and_filter"], 40000),
-        record("b", "2026-06-10", 46000),
+        event("a", "2026-01-10", 30000, ["oil_and_filter"], 40000),
+        event("b", "2026-06-10", 46000),
       ],
       TODAY,
     );
@@ -110,8 +110,8 @@ describe("detectMaintenanceAlerts", () => {
   it("usa a próxima revisão declarada mais recente", () => {
     const alerts = detectMaintenanceAlerts(
       [
-        record("a", "2025-01-10", 30000, ["oil_and_filter"], 40000),
-        record("b", "2026-01-10", 45000, ["oil_and_filter"], 60000),
+        event("a", "2025-01-10", 30000, ["oil_and_filter"], 40000),
+        event("b", "2026-01-10", 45000, ["oil_and_filter"], 60000),
       ],
       TODAY,
     );

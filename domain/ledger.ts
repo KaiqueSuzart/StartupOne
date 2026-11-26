@@ -1,4 +1,4 @@
-import type { ServiceRecord } from "./types";
+import type { VehicleEvent } from "./types";
 
 /**
  * Encadeamento didático de registros: cada registro recebe um hash que
@@ -24,7 +24,7 @@ function fnv1a(input: string): string {
 }
 
 export interface LedgerEntry {
-  recordId: string;
+  eventId: string;
   /** Posição na cadeia (0-based), na ordem em que os registros entraram. */
   index: number;
   /** Hash do registro encadeado ao anterior (16 hex). */
@@ -35,15 +35,17 @@ export interface LedgerEntry {
 /** Hash-âncora da cadeia — não há registro anterior ao primeiro. */
 export const GENESIS_HASH = "0000000000000000";
 
-function serialize(record: ServiceRecord): string {
+function serialize(event: VehicleEvent): string {
   return [
-    record.id,
-    record.date,
-    record.recordedAt,
-    String(record.odometerKm),
-    record.workshop,
-    record.attestor,
-    record.serviceType,
+    event.id,
+    event.date,
+    // Forma canônica do instante: o mesmo carimbo chega com offsets
+    // diferentes conforme a fonte, e o elo não pode depender da grafia.
+    new Date(event.recordedAt).toISOString(),
+    String(event.odometerKm),
+    event.workshop,
+    event.attestor,
+    event.serviceType,
   ].join("|");
 }
 
@@ -52,22 +54,25 @@ function serialize(record: ServiceRecord): string {
  * ordem dos serviços: um histórico append-only encadeia o que chega, quando
  * chega. Por isso um registro retroativo aparece no meio da linha do tempo mas
  * no fim da cadeia — e não há como reordená-lo sem quebrar os hashes.
- * Empates são desfeitos pelo id para manter a função determinística.
+ * A ordem é a do instante, não a do texto: carimbos com offsets diferentes
+ * não se ordenam alfabeticamente. Empates são desfeitos pelo id para manter a
+ * função determinística.
  */
 export function buildLedgerChain(
-  records: readonly ServiceRecord[],
+  events: readonly VehicleEvent[],
 ): LedgerEntry[] {
-  const sorted = [...records].sort(
+  const sorted = [...events].sort(
     (a, b) =>
-      a.recordedAt.localeCompare(b.recordedAt) || a.id.localeCompare(b.id),
+      Date.parse(a.recordedAt) - Date.parse(b.recordedAt) ||
+      a.id.localeCompare(b.id),
   );
   const chain: LedgerEntry[] = [];
   let previousHash = GENESIS_HASH;
 
-  sorted.forEach((record, index) => {
-    const payload = `${previousHash}:${serialize(record)}`;
+  sorted.forEach((event, index) => {
+    const payload = `${previousHash}:${serialize(event)}`;
     const hash = `${fnv1a(payload)}${fnv1a(`${payload}#2`)}`;
-    chain.push({ recordId: record.id, index, hash, previousHash });
+    chain.push({ eventId: event.id, index, hash, previousHash });
     previousHash = hash;
   });
 

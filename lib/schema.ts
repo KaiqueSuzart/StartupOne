@@ -12,6 +12,10 @@ const isoDateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "data deve estar no formato YYYY-MM-DD");
 
+// Carimbo de entrada: instante completo com offset explícito. Sem offset o
+// mesmo texto valeria horas diferentes conforme o fuso de quem lê.
+const isoInstantSchema = z.iso.datetime({ offset: true });
+
 export const serviceItemSchema = z.enum([
   "oil_and_filter",
   "air_filter",
@@ -35,10 +39,10 @@ const serviceEvidenceSchema = z.object({
   photoReading: z.enum(["match", "mismatch", "unreadable"]).optional(),
 });
 
-export const serviceRecordSchema = z.object({
+export const vehicleEventSchema = z.object({
   id: z.string().min(1),
   date: isoDateSchema,
-  recordedAt: isoDateSchema,
+  recordedAt: isoInstantSchema,
   odometerKm: z.number().int().min(0),
   workshop: z.string().min(1),
   attestor: z.enum([
@@ -87,8 +91,20 @@ export const recallNoticeSchema = z.object({
 
 export const vehicleHistorySchema = z.object({
   vehicle: vehicleSchema,
-  records: z.array(serviceRecordSchema).min(1),
+  events: z.array(vehicleEventSchema).min(1),
   recalls: z.array(recallNoticeSchema),
+});
+
+/**
+ * Formato dos arquivos de `data/vehicles`. A versão 2 trocou `records` por
+ * `events` e passou `recordedAt` a instante completo. A versão é do arquivo,
+ * não do domínio: um fixture antigo é recusado inteiro em vez de ser lido pela
+ * metade.
+ */
+export const FIXTURE_SCHEMA_VERSION = 2;
+
+export const vehicleFixtureSchema = vehicleHistorySchema.extend({
+  schemaVersion: z.literal(FIXTURE_SCHEMA_VERSION),
 });
 
 // Garantia em tempo de compilação de que o schema produz exatamente o tipo

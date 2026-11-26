@@ -40,7 +40,7 @@ export default async function MeuCarroPage({
     history === null
       ? null
       : summarizeCoverage(
-          history.records,
+          history.events,
           new Date().toISOString().slice(0, 10),
         );
 
@@ -92,7 +92,7 @@ export default async function MeuCarroPage({
                 {history.vehicle.make} {history.vehicle.model}
               </p>
               <p className="text-sm text-slate-500">
-                {history.records.length} registros ·{" "}
+                {history.events.length} registros ·{" "}
                 {coverage.documentedYears} de {coverage.vehicleYears} anos
                 documentados
               </p>
