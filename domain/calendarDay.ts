@@ -21,5 +21,6 @@ export function toBrasiliaDay(instantIso: string): string {
   const part = (type: Intl.DateTimeFormatPartTypes): string =>
     parts.find((candidate) => candidate.type === type)?.value ?? "";
 
-  return `${part("year")}-${part("month")}-${part("day")}`;
+  // O ano vem sem zeros à esquerda; sem eles "1-06-01" seria lido como 2001.
+  return `${part("year").padStart(4, "0")}-${part("month")}-${part("day")}`;
 }

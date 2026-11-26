@@ -24,6 +24,12 @@ describe("toBrasiliaDay", () => {
     );
   });
 
+  it("mantém o ano com quatro dígitos, para o dia continuar comparável", () => {
+    // Sem os zeros à esquerda, "1-06-01" seria lido como o ano 2001.
+    expect(toBrasiliaDay("0001-06-01T12:00:00Z")).toBe("0001-06-01");
+    expect(toBrasiliaDay("0999-06-01T12:00:00Z")).toBe("0999-06-01");
+  });
+
   it("respeita o horário de verão dos anos em que ele existiu", () => {
     // Em janeiro de 2016 Brasília estava em UTC-2: 02h30 UTC já era dia 10.
     expect(toBrasiliaDay("2016-01-10T02:30:00Z")).toBe("2016-01-10");
